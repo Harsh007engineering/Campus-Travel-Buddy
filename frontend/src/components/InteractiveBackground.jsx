@@ -2,30 +2,82 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
 /**
- * Interactive Background:
- * 1. Fluid cursor-following radial spotlight with buttery-smooth physics (lerp)
- * 2. Interactive canvas particles/sparkles that react to mouse proximity
- * 3. Dot-matrix grid that illuminates under the spotlight
+ * High-Impact Interactive Cursor Physics & Sparkle Engine
+ * 1. Foreground Canvas (z-40): Emits luminous 4-point star sparkles and sparks trailing the cursor
+ * 2. Background Canvas (z-0): Interactive floating starfield repelled by cursor
+ * 3. Cursor Glow Spotlight: Smooth lerped radial aura illuminating cards
  */
 const InteractiveBackground = () => {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
-    const canvasRef = useRef(null);
-    const containerRef = useRef(null);
+    const fgCanvasRef = useRef(null);
+    const bgCanvasRef = useRef(null);
 
-    // Mouse coordinates with lerping for smooth inertia
-    const mousePos = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 3 });
-    const targetPos = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 3 });
-    const [spotlightStyle, setSpotlightStyle] = useState({ x: 0, y: 0, opacity: 0 });
+    // Mouse coordinates with spring lerp
+    const mouse = useRef({ x: -1000, y: -1000, prevX: -1000, prevY: -1000, speed: 0 });
+    const smoothMouse = useRef({ x: -1000, y: -1000 });
+    const [cursorVisible, setCursorVisible] = useState(false);
+
+    // Palette for vibrant glowing sparkles
+    const colors = isDark 
+        ? ['#38bdf8', '#60a5fa', '#34d399', '#a78bfa', '#f472b6', '#fbbf24']
+        : ['#2563eb', '#06b6d4', '#059669', '#7c3aed', '#e11d48', '#d97706'];
+
+    // Helper: Draw 4-point glowing star
+    const drawStar = (ctx, cx, cy, spikes, outerRadius, innerRadius, color, alpha) => {
+        let rot = (Math.PI / 2) * 3;
+        let x = cx;
+        let y = cy;
+        const step = Math.PI / spikes;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - outerRadius);
+        for (let i = 0; i < spikes; i++) {
+            x = cx + Math.cos(rot) * outerRadius;
+            y = cy + Math.sin(rot) * outerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+
+            x = cx + Math.cos(rot) * innerRadius;
+            y = cy + Math.sin(rot) * innerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+        }
+        ctx.lineTo(cx, cy - outerRadius);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = color;
+        ctx.fill();
+
+        // Bright center core
+        ctx.beginPath();
+        ctx.arc(cx, cy, innerRadius * 0.8, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = Math.max(0, Math.min(1, alpha * 0.9));
+        ctx.fill();
+
+        ctx.restore();
+    };
 
     useEffect(() => {
         const handleMouseMove = (e) => {
-            targetPos.current = { x: e.clientX, y: e.clientY };
-            setSpotlightStyle(prev => ({ ...prev, opacity: 1 }));
+            const dx = e.clientX - mouse.current.x;
+            const dy = e.clientY - mouse.current.y;
+            mouse.current.speed = Math.hypot(dx, dy);
+            mouse.current.prevX = mouse.current.x;
+            mouse.current.prevY = mouse.current.y;
+            mouse.current.x = e.clientX;
+            mouse.current.y = e.clientY;
+            if (!cursorVisible) setCursorVisible(true);
         };
 
         const handleMouseLeave = () => {
-            setSpotlightStyle(prev => ({ ...prev, opacity: 0 }));
+            setCursorVisible(false);
+            mouse.current.x = -1000;
+            mouse.current.y = -1000;
         };
 
         window.addEventListener('mousemove', handleMouseMove);
@@ -35,167 +87,214 @@ const InteractiveBackground = () => {
             window.removeEventListener('mousemove', handleMouseMove);
             document.body.removeEventListener('mouseleave', handleMouseLeave);
         };
-    }, []);
+    }, [cursorVisible]);
 
-    // Canvas particle simulation
+    // MAIN PHYSICS & SPARKLE LOOP
     useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        let animationFrameId;
+        const fgCanvas = fgCanvasRef.current;
+        const bgCanvas = bgCanvasRef.current;
+        if (!fgCanvas || !bgCanvas) return;
 
-        const resizeCanvas = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        const fgCtx = fgCanvas.getContext('2d');
+        const bgCtx = bgCanvas.getContext('2d');
+        let animationId;
+
+        const resize = () => {
+            fgCanvas.width = window.innerWidth;
+            fgCanvas.height = window.innerHeight;
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
         };
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+        resize();
+        window.addEventListener('resize', resize);
 
-        // Particle class for floating sparkles
-        const PARTICLE_COUNT = 45;
-        const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            baseX: Math.random() * canvas.width,
-            baseY: Math.random() * canvas.height,
-            size: Math.random() * 2 + 0.8,
-            vx: (Math.random() - 0.5) * 0.4,
-            vy: (Math.random() - 0.5) * 0.4,
+        // Active sparkles list
+        const sparkles = [];
+
+        // Ambient floating background particles
+        const ambientCount = 50;
+        const ambientStars = Array.from({ length: ambientCount }, () => ({
+            x: Math.random() * bgCanvas.width,
+            y: Math.random() * bgCanvas.height,
+            size: Math.random() * 2 + 1,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            color: colors[Math.floor(Math.random() * colors.length)],
             opacity: Math.random() * 0.5 + 0.2,
-            pulseSpeed: Math.random() * 0.02 + 0.008,
-            pulseOffset: Math.random() * Math.PI * 2,
+            pulse: Math.random() * Math.PI * 2,
         }));
 
-        // Interactive cursor sparkles trail
-        const trailSparkles = [];
+        let frame = 0;
 
-        let lastTrailTime = 0;
-        const updateParticles = (time) => {
-            // Lerp mouse position for smooth spotlight inertia
-            mousePos.current.x += (targetPos.current.x - mousePos.current.x) * 0.08;
-            mousePos.current.y += (targetPos.current.y - mousePos.current.y) * 0.08;
+        const render = () => {
+            frame++;
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Smooth lerp for cursor spotlight
+            smoothMouse.current.x += (mouse.current.x - smoothMouse.current.x) * 0.12;
+            smoothMouse.current.y += (mouse.current.y - smoothMouse.current.y) * 0.12;
 
-            // Periodically emit micro sparkles near cursor when moving
-            const distMoved = Math.hypot(targetPos.current.x - mousePos.current.x, targetPos.current.y - mousePos.current.y);
-            if (distMoved > 2 && time - lastTrailTime > 60) {
-                lastTrailTime = time;
-                trailSparkles.push({
-                    x: targetPos.current.x + (Math.random() - 0.5) * 40,
-                    y: targetPos.current.y + (Math.random() - 0.5) * 40,
-                    vx: (Math.random() - 0.5) * 1.2,
-                    vy: (Math.random() - 0.5) * 1.2 - 0.5,
-                    size: Math.random() * 2.5 + 1.2,
-                    life: 1.0,
-                    decay: Math.random() * 0.03 + 0.02,
-                });
-            }
+            // Clear canvases
+            fgCtx.clearRect(0, 0, fgCanvas.width, fgCanvas.height);
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
 
-            // Draw and update ambient particles
-            const particleColor = isDark ? 'rgba(96, 165, 250, ' : 'rgba(37, 99, 235, ';
-            const sparkleColor = isDark ? 'rgba(56, 189, 248, ' : 'rgba(16, 185, 129, ';
-
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-
-                // Screen bounce
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-                // Interactive repulsion/attraction to cursor
-                const dx = mousePos.current.x - p.x;
-                const dy = mousePos.current.y - p.y;
-                const dist = Math.hypot(dx, dy);
-                const maxDist = 180;
-
-                if (dist < maxDist) {
-                    const force = (1 - dist / maxDist) * 1.5;
-                    p.x -= (dx / dist) * force;
-                    p.y -= (dy / dist) * force;
-                }
-
-                // Shimmer pulse
-                const shimmer = Math.sin(time * p.pulseSpeed + p.pulseOffset) * 0.25 + 0.5;
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `${particleColor}${p.opacity * shimmer})`;
-                ctx.fill();
-
-                // Sparkle cross star flare for larger particles
-                if (p.size > 2.0 && dist < maxDist * 1.2) {
-                    ctx.save();
-                    ctx.strokeStyle = `${sparkleColor}${shimmer * 0.4})`;
-                    ctx.lineWidth = 0.7;
-                    ctx.beginPath();
-                    ctx.moveTo(p.x - p.size * 2, p.y);
-                    ctx.lineTo(p.x + p.size * 2, p.y);
-                    ctx.moveTo(p.x, p.y - p.size * 2);
-                    ctx.lineTo(p.x, p.y + p.size * 2);
-                    ctx.stroke();
-                    ctx.restore();
+            // ====================
+            // 1. SPAWN SPARKLES ON MOUSE MOVE
+            // ====================
+            if (mouse.current.x > 0 && mouse.current.y > 0 && mouse.current.speed > 1.5) {
+                const count = Math.min(5, Math.floor(mouse.current.speed / 4) + 1);
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = Math.random() * 3 + 1;
+                    sparkles.push({
+                        x: mouse.current.x + (Math.random() - 0.5) * 16,
+                        y: mouse.current.y + (Math.random() - 0.5) * 16,
+                        vx: Math.cos(angle) * velocity,
+                        vy: Math.sin(angle) * velocity - 0.8, // gentle upward drift
+                        size: Math.random() * 7 + 4,
+                        maxLife: Math.random() * 25 + 25,
+                        life: 0,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        spikes: 4,
+                        rotation: Math.random() * Math.PI,
+                        rotSpeed: (Math.random() - 0.5) * 0.15,
+                    });
                 }
             }
 
-            // Draw and update trail sparkles
-            for (let i = trailSparkles.length - 1; i >= 0; i--) {
-                const s = trailSparkles[i];
+            // ====================
+            // 2. RENDER FOREGROUND SPARKLES (z-40)
+            // ====================
+            fgCtx.globalCompositeOperation = 'lighter';
+
+            for (let i = sparkles.length - 1; i >= 0; i--) {
+                const s = sparkles[i];
+                s.life++;
                 s.x += s.vx;
                 s.y += s.vy;
-                s.life -= s.decay;
+                s.vx *= 0.95; // air friction
+                s.vy *= 0.95;
+                s.vy += 0.04; // subtle gravity
+                s.rotation += s.rotSpeed;
 
-                if (s.life <= 0) {
-                    trailSparkles.splice(i, 1);
+                const progress = s.life / s.maxLife;
+                const alpha = Math.sin(progress * Math.PI); // fade in then out
+                const currentRadius = s.size * (1 - progress * 0.3);
+
+                if (progress >= 1) {
+                    sparkles.splice(i, 1);
                     continue;
                 }
 
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2);
-                ctx.fillStyle = `${sparkleColor}${s.life * 0.7})`;
-                ctx.fill();
+                drawStar(
+                    fgCtx, 
+                    s.x, 
+                    s.y, 
+                    s.spikes, 
+                    currentRadius, 
+                    currentRadius * 0.35, 
+                    s.color, 
+                    alpha
+                );
             }
 
-            animationFrameId = requestAnimationFrame(updateParticles);
+            // ====================
+            // 3. RENDER BACKGROUND AMBIENT PARTICLES (z-0)
+            // ====================
+            for (let i = 0; i < ambientStars.length; i++) {
+                const star = ambientStars[i];
+                star.x += star.vx;
+                star.y += star.vy;
+                star.pulse += 0.03;
+
+                // Screen Wrap
+                if (star.x < 0) star.x = bgCanvas.width;
+                if (star.x > bgCanvas.width) star.x = 0;
+                if (star.y < 0) star.y = bgCanvas.height;
+                if (star.y > bgCanvas.height) star.y = 0;
+
+                // Repulsion when cursor comes near
+                const dx = smoothMouse.current.x - star.x;
+                const dy = smoothMouse.current.y - star.y;
+                const dist = Math.hypot(dx, dy);
+                const maxRange = 160;
+
+                if (dist < maxRange && dist > 0) {
+                    const force = (1 - dist / maxRange) * 3.5;
+                    star.x -= (dx / dist) * force;
+                    star.y -= (dy / dist) * force;
+                }
+
+                const alpha = (Math.sin(star.pulse) * 0.3 + 0.7) * star.opacity;
+                bgCtx.save();
+                bgCtx.beginPath();
+                bgCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                bgCtx.fillStyle = star.color;
+                bgCtx.globalAlpha = isDark ? alpha : alpha * 0.6;
+                bgCtx.shadowBlur = 8;
+                bgCtx.shadowColor = star.color;
+                bgCtx.fill();
+                bgCtx.restore();
+            }
+
+            animationId = requestAnimationFrame(render);
         };
 
-        animationFrameId = requestAnimationFrame(updateParticles);
+        animationId = requestAnimationFrame(render);
 
         return () => {
-            cancelAnimationFrame(animationFrameId);
-            window.removeEventListener('resize', resizeCanvas);
+            cancelAnimationFrame(animationId);
+            window.removeEventListener('resize', resize);
         };
     }, [isDark]);
 
     return (
-        <div ref={containerRef} className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-            {/* Interactive Cursor Spotlight Glow */}
-            <div
-                className="absolute inset-0 transition-opacity duration-500 ease-out"
-                style={{
-                    opacity: spotlightStyle.opacity,
-                    background: isDark
-                        ? `radial-gradient(650px circle at ${mousePos.current.x}px ${mousePos.current.y}px, rgba(37, 99, 235, 0.18), rgba(6, 182, 212, 0.08), transparent 75%)`
-                        : `radial-gradient(650px circle at ${mousePos.current.x}px ${mousePos.current.y}px, rgba(37, 99, 235, 0.09), rgba(6, 182, 212, 0.05), transparent 75%)`,
-                }}
+        <>
+            {/* LAYER 1: Deep Background Glow Spotlight (z-0) */}
+            <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+                <div
+                    className="absolute inset-0 transition-opacity duration-300 ease-out"
+                    style={{
+                        opacity: cursorVisible ? 1 : 0,
+                        background: isDark
+                            ? `radial-gradient(600px circle at ${smoothMouse.current.x}px ${smoothMouse.current.y}px, rgba(37, 99, 235, 0.22), rgba(6, 182, 212, 0.1), transparent 70%)`
+                            : `radial-gradient(600px circle at ${smoothMouse.current.x}px ${smoothMouse.current.y}px, rgba(37, 99, 235, 0.12), rgba(6, 182, 212, 0.06), transparent 70%)`,
+                    }}
+                />
+
+                {/* Tech Dot Matrix Grid (Lights up under cursor) */}
+                <div 
+                    className="absolute inset-0 opacity-[0.04] dark:opacity-[0.08]"
+                    style={{
+                        backgroundImage: isDark
+                            ? `radial-gradient(#ffffff 1.2px, transparent 1.2px)`
+                            : `radial-gradient(#000000 1.2px, transparent 1.2px)`,
+                        backgroundSize: '24px 24px',
+                    }}
+                />
+
+                {/* Background Ambient Stars Canvas */}
+                <canvas ref={bgCanvasRef} className="absolute inset-0 block w-full h-full" />
+            </div>
+
+            {/* LAYER 2: Foreground Cursor Sparkle Trail (z-40, above cards and text!) */}
+            <canvas 
+                ref={fgCanvasRef} 
+                className="pointer-events-none fixed inset-0 z-40 block w-full h-full" 
             />
 
-            {/* Subtle Tech Grid / Matrix Mask (Illuminated by spotlight) */}
-            <div 
-                className="absolute inset-0 opacity-[0.035] dark:opacity-[0.07]"
-                style={{
-                    backgroundImage: isDark
-                        ? `radial-gradient(#ffffff 1px, transparent 1px)`
-                        : `radial-gradient(#000000 1px, transparent 1px)`,
-                    backgroundSize: '28px 28px',
-                }}
-            />
-
-            {/* Canvas Sparkles & Constellation Physics */}
-            <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
-        </div>
+            {/* LAYER 3: Magnetic Glowing Cursor Ring (z-50) */}
+            {cursorVisible && (
+                <div 
+                    className="pointer-events-none fixed z-50 w-8 h-8 rounded-full border border-blue-400/50 dark:border-cyan-400/60 shadow-[0_0_15px_rgba(56,189,248,0.5)] transition-transform duration-75 ease-out -translate-x-1/2 -translate-y-1/2"
+                    style={{
+                        left: `${smoothMouse.current.x}px`,
+                        top: `${smoothMouse.current.y}px`,
+                    }}
+                >
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-cyan-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                </div>
+            )}
+        </>
     );
 };
 
