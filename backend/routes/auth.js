@@ -37,7 +37,10 @@ router.post('/signup', async (req, res) => {
         });
     } catch (error) {
         console.error('Signup error:', error);
-        res.status(500).json({ message: 'Server error during signup' });
+        res.status(500).json({ 
+            message: 'Server error during signup',
+            error: error.message 
+        });
     }
 });
 
@@ -65,7 +68,10 @@ router.post('/login', async (req, res) => {
         });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error during login' });
+        res.status(500).json({ 
+            message: 'Server error during login',
+            error: error.message 
+        });
     }
 });
 
