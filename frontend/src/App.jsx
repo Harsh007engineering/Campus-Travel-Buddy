@@ -2,19 +2,20 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast'; 
 import Navbar from './components/Navbar';
+import CampusLogo from './components/CampusLogo';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 import { 
-    Car, Shield, IndianRupee, Users, MapPin, Zap, Sparkles, 
+    Shield, Users, MapPin, Zap, Sparkles, 
     ArrowRight, CheckCircle2, MessageCircle, Clock, ChevronDown, 
-    Code2, Lock, AlertCircle, Compass, Star, TrendingDown
+    Code2, Lock, Compass, Star, TrendingDown, Check
 } from 'lucide-react';
 import { enterGuestMode } from './data/demoData';
 
-// Landing Page Component
+// Big-Tech Caliber Landing Page Component
 const LandingPage = () => {
     const navigate = useNavigate();
     const [searchTo, setSearchTo] = useState('');
@@ -35,9 +36,9 @@ const LandingPage = () => {
             {/* HERO SECTION */}
             <section className="pt-6 sm:pt-14 pb-8 sm:pb-16 text-center flex flex-col items-center">
                 {/* University Badge */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 rounded-full text-blue-700 dark:text-blue-400 text-xs sm:text-sm font-bold mb-8 shadow-xs">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-50 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/60 rounded-full text-blue-700 dark:text-blue-400 text-xs sm:text-sm font-bold mb-8 shadow-xs">
                     <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-                    Exclusive to Verified VIT-AP University Students
+                    VIT-AP University Verified Peer Network
                 </div>
 
                 {/* Primary Headline */}
@@ -50,16 +51,16 @@ const LandingPage = () => {
 
                 {/* Subtitle */}
                 <p className="text-base sm:text-xl text-zinc-600 dark:text-zinc-400 mb-10 max-w-2xl font-normal leading-relaxed">
-                    The peer-to-peer carpool and auto-split network for college students. Split fuel costs, travel with verified classmates, and coordinate pickups via WhatsApp in seconds.
+                    The peer-to-peer carpool and auto-split network built exclusively for university students. Split fuel, ride with classmates, and coordinate pickups on WhatsApp.
                 </p>
 
                 {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md justify-center mb-12">
+                <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md justify-center mb-14">
                     <Link 
                         to="/signup" 
-                        className="px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-sm text-base flex items-center justify-center gap-2 active:scale-95"
+                        className="px-7 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-xs text-sm flex items-center justify-center gap-2 active:scale-95"
                     >
-                        Sign Up with College ID <ArrowRight size={17} />
+                        Sign Up with Student Email <ArrowRight size={16} />
                     </Link>
 
                     <button 
@@ -68,28 +69,28 @@ const LandingPage = () => {
                             enterGuestMode();
                             window.location.href = '/dashboard';
                         }}
-                        className="px-6 py-3.5 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-bold rounded-xl border border-zinc-200 dark:border-zinc-800 transition text-base flex items-center justify-center gap-2 active:scale-95"
+                        className="px-6 py-3.5 bg-white dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-bold rounded-xl border border-zinc-200 dark:border-zinc-800 transition text-sm flex items-center justify-center gap-2 active:scale-95 shadow-xs"
                     >
-                        <Sparkles size={16} className="text-amber-500" /> Explore Demo Mode
+                        <Sparkles size={15} className="text-amber-500" /> Explore Demo Mode
                     </button>
                 </div>
 
-                {/* INTERACTIVE TRIP SEARCH BOX (AirBnB / BlaBlaCar style) */}
-                <div className="w-full max-w-3xl bg-white dark:bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xl text-left">
-                    <div className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-3 flex items-center gap-2">
+                {/* INTERACTIVE TRIP SEARCH WIDGET (Airbnb / BlaBlaCar style) */}
+                <div className="w-full max-w-3xl bg-white dark:bg-zinc-900 p-4 sm:p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-xl dark:shadow-2xl text-left">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-3 flex items-center gap-2">
                         <Compass size={14} className="text-blue-600" /> Quick Trip Finder
                     </div>
                     
                     <form onSubmit={handleQuickSearch} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div className="p-3 bg-zinc-50 dark:bg-zinc-950/80 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <div className="p-3 bg-zinc-50 dark:bg-zinc-950 rounded-xl border border-zinc-200/70 dark:border-zinc-800">
                             <label className="text-[10px] uppercase font-bold text-zinc-400 block mb-0.5">Leaving From</label>
                             <div className="flex items-center gap-2 text-sm font-bold text-zinc-900 dark:text-white">
-                                <MapPin size={16} className="text-blue-600 shrink-0" />
-                                <span className="truncate">VIT-AP Campus (Main Gate)</span>
+                                <MapPin size={15} className="text-blue-600 shrink-0" />
+                                <span className="truncate">VIT-AP Main Gate</span>
                             </div>
                         </div>
 
-                        <div className="p-3 bg-zinc-50 dark:bg-zinc-950/80 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <div className="p-3 bg-zinc-50 dark:bg-zinc-950 rounded-xl border border-zinc-200/70 dark:border-zinc-800">
                             <label className="text-[10px] uppercase font-bold text-zinc-400 block mb-0.5">Going To</label>
                             <input 
                                 type="text" 
@@ -104,13 +105,13 @@ const LandingPage = () => {
                             type="submit" 
                             className="bg-zinc-950 dark:bg-blue-600 hover:bg-zinc-800 dark:hover:bg-blue-700 text-white font-bold rounded-xl px-5 py-3 flex items-center justify-center gap-2 transition text-sm shadow-xs"
                         >
-                            Find Available Rides <ArrowRight size={15} />
+                            Search Rides <ArrowRight size={15} />
                         </button>
                     </form>
 
                     {/* Quick Destination Chips */}
-                    <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 text-xs font-semibold">
-                        <span className="text-zinc-400 text-[11px] font-bold">POPULAR:</span>
+                    <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800/80 text-xs font-semibold">
+                        <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-wider">FREQUENT ROUTES:</span>
                         {[
                             { name: 'Vijayawada Stn', price: '₹120' },
                             { name: 'Guntur Bus Stand', price: '₹80' },
@@ -128,24 +129,24 @@ const LandingPage = () => {
                                 className="px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/40 hover:text-blue-600 transition flex items-center gap-1.5"
                             >
                                 <span>{dest.name}</span>
-                                <span className="text-[10px] font-extrabold text-blue-600 dark:text-blue-400">{dest.price}</span>
+                                <span className="text-[10px] font-black text-blue-600 dark:text-blue-400">{dest.price}</span>
                             </button>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* REAL COST COMPARISON SECTION (Why students love this) */}
+            {/* REAL COST COMPARISON SECTION */}
             <section className="max-w-4xl mx-auto">
                 <div className="text-center mb-10">
                     <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800/40">
                         Student Economics
                     </span>
                     <h2 className="text-3xl sm:text-4xl font-black text-zinc-950 dark:text-white mt-3 tracking-tight">
-                        Why pay solo when you can split?
+                        Why travel solo when you can split?
                     </h2>
                     <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 mt-1 max-w-lg mx-auto">
-                        A typical trip from VIT-AP to Vijayawada Railway Station or Bus Stand:
+                        Typical one-way trip from VIT-AP to Vijayawada Railway Station:
                     </p>
                 </div>
 
@@ -168,7 +169,7 @@ const LandingPage = () => {
                     </div>
 
                     {/* With Campus Buddy */}
-                    <div className="p-6 sm:p-7 rounded-2xl bg-blue-50/70 dark:bg-zinc-900 border-2 border-blue-600 dark:border-blue-500 space-y-4 relative shadow-lg">
+                    <div className="p-6 sm:p-7 rounded-2xl bg-blue-50/60 dark:bg-zinc-900 border-2 border-blue-600 dark:border-blue-500 space-y-4 relative shadow-lg">
                         <div className="absolute -top-3 right-6 bg-blue-600 text-white text-[11px] font-extrabold uppercase px-3 py-0.5 rounded-full shadow-xs">
                             Save Up to 80%
                         </div>
@@ -274,7 +275,7 @@ const LandingPage = () => {
                 </div>
             </section>
 
-            {/* FREQUENTLY ASKED QUESTIONS (Accordion) */}
+            {/* FREQUENTLY ASKED QUESTIONS */}
             <section className="max-w-3xl mx-auto space-y-6">
                 <div className="text-center">
                     <h2 className="text-2xl sm:text-3xl font-black text-zinc-950 dark:text-white">
@@ -357,11 +358,9 @@ const LandingPage = () => {
 
             {/* FOOTER */}
             <footer className="border-t border-zinc-200 dark:border-zinc-800 pt-8 pb-10 text-center space-y-3">
-                <div className="flex items-center justify-center gap-2">
-                    <div className="w-6 h-6 bg-blue-600 text-white rounded-lg flex items-center justify-center font-bold text-xs">
-                        <Car size={13} />
-                    </div>
-                    <span className="font-extrabold text-sm text-zinc-900 dark:text-white">Campus Travel Buddy</span>
+                <div className="flex items-center justify-center gap-2.5">
+                    <CampusLogo size={24} />
+                    <span className="font-extrabold text-sm text-zinc-950 dark:text-white">Campus Travel Buddy</span>
                 </div>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
                     A non-profit peer carpool initiative built by Harsh for college students.
@@ -384,7 +383,7 @@ const LandingPage = () => {
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
+      <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-[#050507] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
         <Toaster 
           position="top-center" 
           reverseOrder={false} 

@@ -12,45 +12,46 @@
 :root {
   --bg-canvas: #f8fafc;
   --bg-card: #ffffff;
-  --bg-input: #f1f5f9;
+  --bg-card-subtle: #f1f5f9;
   --border-subtle: #e2e8f0;
-  --text-main: #0f172a;
+  --text-main: #09090b;
   --text-muted: #64748b;
 }
 
 .dark {
-  --bg-canvas: #09090b;
-  --bg-card: #141417;
-  --bg-input: #1c1c21;
-  --border-subtle: #27272a;
-  --text-main: #fafafa;
-  --text-muted: #a1a1aa;
+  --bg-canvas: #050507;
+  --bg-card: #0d0d11;
+  --bg-card-subtle: #14141a;
+  --border-subtle: #1f1f28;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
 }
 
 body {
   background-color: var(--bg-canvas);
   color: var(--text-main);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
+  transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   margin: 0;
   padding: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom crisp scrollbar */
+/* Subtle modern scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.4);
+  background: rgba(148, 163, 184, 0.3);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.7);
+  background: rgba(100, 116, 139, 0.6);
 }
