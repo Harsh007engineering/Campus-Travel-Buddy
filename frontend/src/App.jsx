@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import CampusLogo from './components/CampusLogo';
+import InteractiveBackground from './components/InteractiveBackground';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -458,7 +459,8 @@ const LandingPage = () => {
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-zinc-50 dark:bg-[#050507] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
+      <div className="relative min-h-screen flex flex-col bg-zinc-50 dark:bg-[#050507] text-zinc-900 dark:text-zinc-100 transition-colors duration-200">
+        <InteractiveBackground />
         <Toaster 
           position="top-center" 
           reverseOrder={false} 
