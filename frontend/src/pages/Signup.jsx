@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { UserPlus, User, Mail, Lock, Phone, Eye, EyeOff } from 'lucide-react';
+import { UserPlus, User, Mail, Lock, Phone, Eye, EyeOff, Sparkles } from 'lucide-react';
 import api from '../config/api';
+import { enterGuestMode } from '../data/demoData';
 
 const Signup = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '' });
@@ -95,6 +96,27 @@ const Signup = () => {
                         ) : 'Get Started'}
                     </button>
                 </form>
+
+                <div className="relative my-6">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-800"></div>
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-slate-900 px-3 text-slate-500 font-medium">Not a VIT student?</span>
+                    </div>
+                </div>
+
+                <button 
+                    type="button"
+                    onClick={() => {
+                        enterGuestMode();
+                        toast.success('Welcome to Guest Mode! Exploring with simulated data ✨');
+                        navigate('/dashboard');
+                    }}
+                    className="w-full bg-[#1a1635] hover:bg-[#251f47] text-purple-200 border border-purple-900/60 font-semibold py-3.5 rounded-xl transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2"
+                >
+                    <Sparkles size={18} className="text-brand" /> Continue as Guest (Demo Mode)
+                </button>
 
                 <p className="text-center mt-6 text-slate-400">
                     Already registered? <Link to="/login" className="text-brand font-bold hover:text-purple-400 transition">Sign in instead</Link>

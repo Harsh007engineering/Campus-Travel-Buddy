@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { CarFront, LogOut, User, Menu, X } from 'lucide-react';
+import { CarFront, LogOut, User, Menu, X, Sparkles } from 'lucide-react';
+import { isGuestUser, enterGuestMode } from '../data/demoData';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -19,10 +20,17 @@ const Navbar = () => {
 
     const isActive = (path) => location.pathname === path;
 
+    const isGuest = isGuestUser();
+
     const NavLinks = ({ mobile = false }) => (
         <>
             {token ? (
                 <>
+                    {isGuest && (
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 bg-brand/20 text-purple-200 border border-brand/40 rounded-full text-xs font-semibold ${mobile ? 'mb-2 justify-center' : ''}`}>
+                            <Sparkles size={13} className="text-brand" /> Demo Mode
+                        </div>
+                    )}
                     <Link 
                         to="/dashboard" 
                         onClick={() => setMobileMenuOpen(false)}
@@ -41,11 +49,22 @@ const Navbar = () => {
                         onClick={handleLogout} 
                         className={`flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-full transition border border-red-500/20 ${mobile ? 'w-full justify-center mt-2' : 'ml-2'}`}
                     >
-                        <LogOut size={16} /> Logout
+                        <LogOut size={16} /> {isGuest ? 'Exit Demo' : 'Logout'}
                     </button>
                 </>
             ) : (
                 <>
+                    <button
+                        onClick={() => {
+                            enterGuestMode();
+                            setMobileMenuOpen(false);
+                            toast.success('Welcome to Guest Mode! Exploring with simulated data ✨');
+                            navigate('/dashboard');
+                        }}
+                        className={`flex items-center gap-1.5 text-purple-300 hover:text-white font-medium text-sm transition px-3 py-1.5 rounded-full bg-purple-950/40 border border-purple-800/40 ${mobile ? 'w-full justify-center mb-2' : ''}`}
+                    >
+                        <Sparkles size={15} className="text-brand" /> Guest Demo
+                    </button>
                     <Link 
                         to="/login" 
                         onClick={() => setMobileMenuOpen(false)}

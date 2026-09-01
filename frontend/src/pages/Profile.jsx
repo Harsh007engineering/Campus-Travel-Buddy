@@ -1,19 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Calendar, Clock, Edit2, Trash2, X, UserMinus, Users, Loader2 } from 'lucide-react';
+import { Calendar, Clock, Edit2, Trash2, X, UserMinus, Users, Loader2, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../config/api';
+import { isGuestUser, getGuestTrips, updateGuestTrip, deleteGuestTrip, leaveGuestTrip } from '../data/demoData';
 
 const Profile = () => {
     const [trips, setTrips] = useState([]);
     const [editingTrip, setEditingTrip] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const currentUser = JSON.parse(localStorage.getItem('user'));
+    const isGuest = isGuestUser();
 
     useEffect(() => { fetchTrips(); }, []);
 
     const fetchTrips = async () => {
         setIsLoading(true);
+        if (isGuest) {
+            setTimeout(() => {
+                setTrips(getGuestTrips());
+                setIsLoading(false);
+            }, 200);
+            return;
+        }
+
         try {
             const res = await api.get('/trips/all');
             setTrips(res.data);
@@ -26,6 +36,13 @@ const Profile = () => {
 
     const handleDelete = async (tripId) => {
         if (!window.confirm('Are you sure you want to delete this trip?')) return;
+        if (isGuest) {
+            deleteGuestTrip(tripId);
+            toast.success('Trip deleted! (Demo)');
+            fetchTrips();
+            return;
+        }
+
         try {
             await api.delete(`/trips/delete/${tripId}`);
             toast.success('Trip deleted!');
@@ -37,6 +54,18 @@ const Profile = () => {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
+        if (isGuest) {
+            try {
+                updateGuestTrip(editingTrip._id, editingTrip);
+                toast.success('Trip updated successfully! (Demo)');
+                setEditingTrip(null);
+                fetchTrips();
+            } catch (err) {
+                toast.error(err.message || 'Failed to update trip');
+            }
+            return;
+        }
+
         try {
             await api.put(`/trips/edit/${editingTrip._id}`, editingTrip);
             toast.success('Trip updated successfully!');
@@ -49,6 +78,17 @@ const Profile = () => {
 
     const handleLeaveTrip = async (tripId) => {
         if (!window.confirm('Are you sure you want to cancel your seat on this ride?')) return;
+        if (isGuest) {
+            try {
+                leaveGuestTrip(tripId, currentUser);
+                toast.success('You have successfully canceled your seat. (Demo)');
+                fetchTrips();
+            } catch (err) {
+                toast.error(err.message || 'Failed to leave trip');
+            }
+            return;
+        }
+
         try {
             await api.post(`/trips/leave/${tripId}`);
             toast.success('You have successfully canceled your seat.');
@@ -80,7 +120,14 @@ const Profile = () => {
                     {currentUser?.name?.charAt(0)}
                 </div>
                 <div className="text-center sm:text-left">
-                    <h1 className="text-3xl font-extrabold text-white">{currentUser?.name}</h1>
+                    <div className="flex flex-col sm:flex-row items-center gap-2">
+                        <h1 className="text-3xl font-extrabold text-white">{currentUser?.name}</h1>
+                        {isGuest && (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 bg-brand/20 text-purple-200 border border-brand/40 rounded-full text-xs font-semibold">
+                                <Sparkles size={13} className="text-brand" /> Demo Guest Account
+                            </span>
+                        )}
+                    </div>
                     <p className="text-purple-300/70">{currentUser?.email}</p>
                     <p className="text-emerald-400 font-mono mt-1">{currentUser?.phone}</p>
                 </div>

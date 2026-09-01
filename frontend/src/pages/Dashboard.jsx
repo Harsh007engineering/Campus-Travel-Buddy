@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Calendar, Clock, Search, ShieldCheck, Car, Lock, MapPin, Loader2 } from 'lucide-react';
+import { Calendar, Clock, Search, ShieldCheck, Car, Lock, MapPin, Loader2, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../config/api';
+import { isGuestUser, getGuestTrips, createGuestTrip, joinGuestTrip } from '../data/demoData';
 
 const Dashboard = () => {
     const [trips, setTrips] = useState([]);
@@ -14,11 +15,21 @@ const Dashboard = () => {
     });
 
     const currentUser = JSON.parse(localStorage.getItem('user'));
+    const isGuest = isGuestUser();
 
     useEffect(() => { fetchTrips(); }, []);
 
     const fetchTrips = async () => {
         setIsLoading(true);
+        if (isGuest) {
+            // In Guest Mode: load from isolated demo storage
+            setTimeout(() => {
+                setTrips(getGuestTrips());
+                setIsLoading(false);
+            }, 300);
+            return;
+        }
+
         try {
             const res = await api.get('/trips/all');
             setTrips(res.data);
@@ -32,6 +43,21 @@ const Dashboard = () => {
     const handlePostTrip = async (e) => {
         e.preventDefault();
         setIsPosting(true);
+
+        if (isGuest) {
+            try {
+                createGuestTrip(newTrip, currentUser);
+                toast.success('Trip posted in Demo Mode! 🚗');
+                setNewTrip({source: '', destination: '', date: '', time: '', availableSeats: '', costPerPerson: ''});
+                fetchTrips();
+            } catch (err) {
+                toast.error(err.message || 'Failed to post trip');
+            } finally {
+                setIsPosting(false);
+            }
+            return;
+        }
+
         try {
             const res = await api.post('/trips/create', newTrip);
             toast.success('Trip posted successfully! 🚗');
@@ -45,6 +71,17 @@ const Dashboard = () => {
     };
 
     const handleJoinTrip = async (tripId) => {
+        if (isGuest) {
+            try {
+                joinGuestTrip(tripId, currentUser);
+                toast.success('Successfully joined the ride (Demo)! 🎉');
+                fetchTrips();
+            } catch (err) {
+                toast.error(err.message || 'Failed to join trip');
+            }
+            return;
+        }
+
         try {
             const res = await api.post(`/trips/join/${tripId}`);
             toast.success(res.data.message);
@@ -80,7 +117,34 @@ const Dashboard = () => {
     );
 
     return (
-        <div className="max-w-5xl mx-auto space-y-10">
+        <div className="max-w-5xl mx-auto space-y-8">
+            {/* Guest Mode Banner */}
+            {isGuest && (
+                <div className="bg-gradient-to-r from-brand/20 via-purple-900/30 to-indigo-900/20 border border-brand/40 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl backdrop-blur-md">
+                    <div className="flex items-center gap-3 text-sm text-purple-200">
+                        <div className="p-2.5 bg-brand text-white rounded-xl shadow-md shrink-0">
+                            <Sparkles size={20} />
+                        </div>
+                        <div>
+                            <p className="font-bold text-white text-base">You're in Guest Demo Mode</p>
+                            <p className="text-xs text-purple-300/80 mt-0.5">
+                                Exploring with simulated campus rides. You can publish rides, join trips, and test features! Real student records are protected.
+                            </p>
+                        </div>
+                    </div>
+                    <button 
+                        onClick={() => {
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            window.location.href = '/login';
+                        }} 
+                        className="shrink-0 px-4 py-2 bg-purple-900/40 hover:bg-purple-800/50 text-purple-200 hover:text-white rounded-xl text-xs font-semibold border border-purple-700/50 transition shadow-sm"
+                    >
+                        Exit Demo Mode
+                    </button>
+                </div>
+            )}
+
             <div className="grid md:grid-cols-3 gap-8">
                 
                 {/* POST TRIP CARD */}

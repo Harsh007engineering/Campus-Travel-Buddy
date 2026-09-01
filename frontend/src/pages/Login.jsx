@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { LogIn, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { LogIn, Mail, Lock, Eye, EyeOff, Sparkles } from 'lucide-react';
 import api from '../config/api';
+import { enterGuestMode } from '../data/demoData';
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+
+    const handleGuestLogin = () => {
+        enterGuestMode();
+        toast.success('Welcome to Guest Mode! Exploring with simulated data ✨');
+        navigate('/dashboard');
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -89,7 +96,24 @@ const Login = () => {
                     </button>
                 </form>
 
-                <p className="text-center mt-8 text-slate-400">
+                <div className="relative my-6">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-800"></div>
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-slate-900 px-3 text-slate-500 font-medium">Or explore without credentials</span>
+                    </div>
+                </div>
+
+                <button 
+                    type="button"
+                    onClick={handleGuestLogin}
+                    className="w-full bg-[#1a1635] hover:bg-[#251f47] text-purple-200 border border-purple-900/60 font-semibold py-3.5 rounded-xl transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2"
+                >
+                    <Sparkles size={18} className="text-brand" /> Explore as Guest (Demo Mode)
+                </button>
+
+                <p className="text-center mt-6 text-slate-400">
                     New here? <Link to="/signup" className="text-brand font-bold hover:text-purple-400 transition">Create an account</Link>
                 </p>
             </div>

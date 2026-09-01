@@ -25,6 +25,11 @@
 - Only registered students with official university email domains (`@vitapstudent.ac.in`) can sign up.
 - Ensures a trusted and verified peer network, keeping out unauthorized strangers.
 
+### ✨ Guest / Demo Mode (For External Visitors & Recruiters)
+- External reviewers, recruiters, and guests can explore the full application with **one click** without needing university credentials.
+- **Zero Real Data Exposure**: Completely isolated simulated dataset — real student accounts and phone numbers are never exposed to guests.
+- **Full Interactive Simulation**: Guests can publish demo rides, book seats with real-time seat math, manage profile trips, and search routes.
+
 ### 🚗 Offer & Discover Rides
 - **Publish Trips**: Drivers can post trips with source, destination, departure date & time, seat capacity, and cost per person (₹).
 - **Search & Filter**: Passengers can easily filter available rides by origin, destination, or dates in real time.

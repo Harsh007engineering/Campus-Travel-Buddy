@@ -7,7 +7,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
-import { CarFront, Shield, IndianRupee, Users, MapPin, Zap } from 'lucide-react';
+import { CarFront, Shield, IndianRupee, Users, MapPin, Zap, Sparkles } from 'lucide-react';
+import { enterGuestMode } from './data/demoData';
 
 function App() {
   return (
@@ -35,9 +36,18 @@ function App() {
                   <p className="text-lg sm:text-xl text-purple-200/60 mb-10 max-w-2xl leading-relaxed">
                     The exclusive, secure carpooling network for campus students. Find travel partners, share rides, and make your commute affordable.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <a href="/signup" className="px-8 py-3.5 bg-brand text-white font-semibold rounded-full hover:bg-purple-500 transition shadow-lg shadow-brand/30 text-lg">Get Started Free</a>
-                    <a href="/login" className="px-8 py-3.5 bg-[#1a1635] text-white font-semibold rounded-full border border-purple-900/50 hover:bg-[#251f47] transition text-lg">Login</a>
+                  <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+                    <a href="/signup" className="w-full sm:w-auto px-8 py-3.5 bg-brand text-white font-semibold rounded-full hover:bg-purple-500 transition shadow-lg shadow-brand/30 text-lg text-center">Get Started Free</a>
+                    <a href="/login" className="w-full sm:w-auto px-8 py-3.5 bg-[#1a1635] text-white font-semibold rounded-full border border-purple-900/50 hover:bg-[#251f47] transition text-lg text-center">Login</a>
+                    <button 
+                      onClick={() => {
+                        enterGuestMode();
+                        window.location.href = '/dashboard';
+                      }}
+                      className="w-full sm:w-auto px-7 py-3.5 bg-purple-950/50 hover:bg-purple-900/50 text-purple-200 font-semibold rounded-full border border-purple-500/40 transition text-lg flex items-center justify-center gap-2 shadow-md"
+                    >
+                      <Sparkles size={18} className="text-brand" /> Explore as Guest
+                    </button>
                   </div>
                 </div>
 
