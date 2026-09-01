@@ -21,7 +21,10 @@ const Signup = () => {
             toast.success('Account created! Welcome aboard! 🎉');
             navigate('/dashboard');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Signup failed. Please try again.');
+            const msg = error.response?.data?.error 
+                ? `${error.response.data.message} (${error.response.data.error})`
+                : (error.response?.data?.message || 'Signup failed. Please try again.');
+            toast.error(msg, { duration: 6000 });
         } finally {
             setLoading(false);
         }

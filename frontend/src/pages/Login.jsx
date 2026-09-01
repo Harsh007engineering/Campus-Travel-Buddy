@@ -20,7 +20,10 @@ const Login = () => {
             toast.success(`Welcome back, ${response.data.user.name}!`);
             navigate('/dashboard');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Login failed. Please check your credentials.');
+            const msg = error.response?.data?.error 
+                ? `${error.response.data.message} (${error.response.data.error})`
+                : (error.response?.data?.message || 'Login failed. Please check your credentials.');
+            toast.error(msg, { duration: 6000 });
         } finally {
             setLoading(false);
         }
