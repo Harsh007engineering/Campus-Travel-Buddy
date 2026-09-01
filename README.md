@@ -71,18 +71,18 @@
 ## 🏛️ System Architecture
 
 ```mermaid
-graph TD
-    User([Student / Client Browser]) -->|HTTPS| Frontend[React 19 Frontend<br/>campus-travel-buddy-ui.vercel.app]
-    Frontend -->|REST API + Bearer Token| Backend[Express Serverless API<br/>campus-travel-buddy.vercel.app]
+flowchart TD
+    User["👤 Student / Client Browser"] -->|HTTPS| Frontend["💻 React 19 Frontend<br/>(campus-travel-buddy-ui.vercel.app)"]
+    Frontend -->|REST API + Bearer Token| Backend["⚙️ Express Serverless API<br/>(campus-travel-buddy.vercel.app)"]
     
-    subgraph Backend Layer
-        Backend --> AuthRouter[/api/auth]
-        Backend --> TripsRouter[/api/trips]
-        Backend --> HealthRouter[/api/health]
-        Backend --> AuthMiddleware[JWT Auth Middleware]
+    subgraph Backend_Layer ["Backend Architecture"]
+        Backend --> AuthRouter["Auth Routes (/api/auth)"]
+        Backend --> TripsRouter["Trips Routes (/api/trips)"]
+        Backend --> HealthRouter["Health Diagnostics (/api/health)"]
+        Backend --> AuthMiddleware["JWT Auth Middleware"]
     end
 
-    Backend -->|Mongoose Pool| MongoDB[(MongoDB Atlas Cluster)]
+    Backend -->|Mongoose Pool| MongoDB[("🍃 MongoDB Atlas Cluster")]
 ```
 
 ---
