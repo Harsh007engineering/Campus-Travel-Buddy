@@ -2,16 +2,21 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { 
     Calendar, Clock, Edit2, Trash2, X, UserMinus, Users, Loader2, 
-    Sparkles, Phone, MessageCircle, ShieldCheck, Car, ChevronRight 
+    Sparkles, Phone, MessageCircle, ShieldCheck, Car, ChevronRight,
+    IndianRupee, ShieldAlert
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../config/api';
 import { isGuestUser, getGuestTrips, updateGuestTrip, deleteGuestTrip, leaveGuestTrip } from '../data/demoData';
+import UpiPaymentModal from '../components/UpiPaymentModal';
+import SafetyToolkitModal from '../components/SafetyToolkitModal';
 
 const Profile = () => {
     const [trips, setTrips] = useState([]);
     const [activeTab, setActiveTab] = useState('hosted'); // 'hosted' or 'joined'
     const [editingTrip, setEditingTrip] = useState(null);
+    const [upiModalTrip, setUpiModalTrip] = useState(null);
+    const [safetyTrip, setSafetyTrip] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const isGuest = isGuestUser();
@@ -328,6 +333,24 @@ const Profile = () => {
                                         )}
                                     </div>
 
+                                    {/* Action Row: Pay UPI & Safety Share */}
+                                    <div className="grid grid-cols-2 gap-2 pt-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => setUpiModalTrip(trip)}
+                                            className="py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 shadow-xs"
+                                        >
+                                            <IndianRupee size={13} /> Settle ₹{trip.costPerPerson} UPI
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setSafetyTrip(trip)}
+                                            className="py-2 glass-panel text-blue-600 dark:text-blue-400 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1"
+                                        >
+                                            <ShieldAlert size={13} /> Safety Check-In
+                                        </button>
+                                    </div>
+
                                     <button 
                                         onClick={() => handleLeaveTrip(trip._id)} 
                                         className="w-full py-2 bg-rose-50/70 dark:bg-rose-950/30 hover:bg-rose-100 text-rose-600 dark:text-rose-400 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 border border-rose-200 dark:border-rose-900/30 shadow-xs"
@@ -385,6 +408,20 @@ const Profile = () => {
                     </div>
                 </div>
             )}
+
+            {/* UPI Payment Settlement Modal */}
+            <UpiPaymentModal
+                isOpen={Boolean(upiModalTrip)}
+                onClose={() => setUpiModalTrip(null)}
+                trip={upiModalTrip}
+            />
+
+            {/* Safety & SOS Toolkit Modal */}
+            <SafetyToolkitModal
+                isOpen={Boolean(safetyTrip)}
+                onClose={() => setSafetyTrip(null)}
+                activeTrip={safetyTrip}
+            />
         </div>
     );
 };
