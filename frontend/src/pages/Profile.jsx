@@ -4,6 +4,7 @@ import {
     Calendar, Clock, Edit2, Trash2, X, UserMinus, Users, Loader2, 
     Sparkles, Phone, MessageCircle, ShieldCheck, Car, ChevronRight 
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../config/api';
 import { isGuestUser, getGuestTrips, updateGuestTrip, deleteGuestTrip, leaveGuestTrip } from '../data/demoData';
 
@@ -104,7 +105,7 @@ const Profile = () => {
     const myPostedTrips = trips.filter(trip => trip.creator?._id === currentUser?.id);
     const myJoinedTrips = trips.filter(trip => trip.passengers?.some(p => p._id === currentUser?.id));
 
-    const inputClass = "w-full px-3.5 py-2.5 rounded-xl border bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-600 outline-none transition";
+    const inputClass = "w-full px-3.5 py-2.5 rounded-xl border bg-white/70 dark:bg-zinc-950/70 border-zinc-200/80 dark:border-zinc-800 text-zinc-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-600 outline-none transition shadow-xs";
 
     if (isLoading) {
         return (
@@ -116,10 +117,17 @@ const Profile = () => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
-            {/* Profile Overview Card */}
-            <div className="bg-white dark:bg-zinc-900 p-6 sm:p-7 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs flex flex-col sm:flex-row items-center gap-5">
-                <div className="w-16 h-16 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 rounded-2xl flex items-center justify-center text-2xl font-black shrink-0">
+        <div className="relative max-w-4xl mx-auto space-y-6 sm:space-y-8">
+            {/* Ambient Background Glow */}
+            <div className="absolute top-0 left-1/4 w-80 h-80 bg-blue-500/10 dark:bg-blue-600/10 rounded-full blur-[100px] pointer-events-none -z-10 animate-blob-1"></div>
+
+            {/* Profile Overview Card (Glass Panel) */}
+            <motion.div 
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glass-panel p-6 sm:p-7 rounded-3xl shadow-xl flex flex-col sm:flex-row items-center gap-5"
+            >
+                <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black shrink-0 shadow-lg shadow-blue-600/30">
                     {currentUser?.name?.charAt(0) || 'U'}
                 </div>
 
@@ -133,7 +141,7 @@ const Profile = () => {
                                 <Sparkles size={12} /> Guest Mode
                             </span>
                         ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 rounded-full text-xs font-bold">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/40 rounded-full text-xs font-bold">
                                 <ShieldCheck size={13} /> Verified Student
                             </span>
                         )}
@@ -149,19 +157,19 @@ const Profile = () => {
 
                 {/* Counter Badges */}
                 <div className="flex gap-2.5 text-center">
-                    <div className="bg-zinc-50 dark:bg-zinc-950 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 min-w-[85px]">
+                    <div className="glass-panel px-4 py-2.5 rounded-2xl min-w-[85px] shadow-xs">
                         <div className="text-xl font-black text-blue-600 dark:text-blue-500">{myPostedTrips.length}</div>
                         <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider mt-0.5">Hosted</div>
                     </div>
-                    <div className="bg-zinc-50 dark:bg-zinc-950 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 min-w-[85px]">
+                    <div className="glass-panel px-4 py-2.5 rounded-2xl min-w-[85px] shadow-xs">
                         <div className="text-xl font-black text-emerald-600 dark:text-emerald-400">{myJoinedTrips.length}</div>
                         <div className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider mt-0.5">Joined</div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             {/* Navigation Tabs */}
-            <div className="flex border-b border-zinc-200 dark:border-zinc-800 gap-4 text-sm">
+            <div className="flex border-b border-zinc-200/80 dark:border-zinc-800 gap-4 text-sm">
                 <button
                     type="button"
                     onClick={() => setActiveTab('hosted')}
@@ -190,12 +198,16 @@ const Profile = () => {
             {activeTab === 'hosted' && (
                 <div className="space-y-3.5">
                     {myPostedTrips.length === 0 ? (
-                        <div className="text-center py-12 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+                        <div className="text-center py-12 glass-panel rounded-3xl p-6">
                             <p className="text-zinc-500 text-sm">You haven't posted any trips yet.</p>
                         </div>
                     ) : (
                         myPostedTrips.map(trip => (
-                            <div key={trip._id} className="bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-3.5">
+                            <motion.div 
+                                whileHover={{ y: -2 }}
+                                key={trip._id} 
+                                className="glass-panel p-5 rounded-2xl shadow-md space-y-3.5"
+                            >
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <div className="font-bold text-base text-zinc-950 dark:text-white flex items-center gap-2">
@@ -204,8 +216,8 @@ const Profile = () => {
                                             <span>{trip.destination}</span>
                                         </div>
                                         <div className="flex gap-3 text-xs text-zinc-500 mt-1 font-medium">
-                                            <span className="flex items-center gap-1"><Calendar size={13} /> {trip.date}</span>
-                                            <span className="flex items-center gap-1"><Clock size={13} /> {trip.time}</span>
+                                            <span className="flex items-center gap-1"><Calendar size={13} className="text-blue-600" /> {trip.date}</span>
+                                            <span className="flex items-center gap-1"><Clock size={13} className="text-blue-600" /> {trip.time}</span>
                                         </div>
                                     </div>
                                     <div className="text-right">
@@ -215,7 +227,7 @@ const Profile = () => {
                                 </div>
 
                                 {/* Passenger Roster */}
-                                <div className="bg-zinc-50 dark:bg-zinc-950 p-3.5 rounded-xl border border-zinc-200/70 dark:border-zinc-800">
+                                <div className="bg-zinc-50/70 dark:bg-zinc-950/70 p-3.5 rounded-xl border border-zinc-200/70 dark:border-zinc-800">
                                     <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-2">
                                         Passengers ({trip.passengers?.length || 0})
                                     </span>
@@ -225,11 +237,11 @@ const Profile = () => {
                                                 const pPhone = p.phone?.replace(/\s+/g, '') || '';
                                                 const wa = `https://wa.me/${pPhone.startsWith('+') ? pPhone.slice(1) : pPhone}?text=Hi%20${encodeURIComponent(p.name)},%20about%20our%20ride...`;
                                                 return (
-                                                    <li key={p._id} className="flex justify-between items-center text-xs bg-white dark:bg-zinc-900 p-2 rounded-lg border border-zinc-200 dark:border-zinc-800">
+                                                    <li key={p._id} className="flex justify-between items-center text-xs glass-panel p-2 rounded-lg">
                                                         <span className="font-semibold text-zinc-900 dark:text-white">{p.name}</span>
                                                         <div className="flex items-center gap-2">
                                                             <span className="font-mono text-zinc-500">{p.phone}</span>
-                                                            <a href={wa} target="_blank" rel="noopener noreferrer" className="p-1 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition">
+                                                            <a href={wa} target="_blank" rel="noopener noreferrer" className="p-1 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition shadow-xs">
                                                                 <MessageCircle size={12} />
                                                             </a>
                                                         </div>
@@ -245,18 +257,18 @@ const Profile = () => {
                                 <div className="flex gap-2 pt-1">
                                     <button 
                                         onClick={() => setEditingTrip({...trip})} 
-                                        className="flex-1 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 text-zinc-800 dark:text-zinc-200 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5"
+                                        className="flex-1 py-2 glass-panel hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs"
                                     >
                                         <Edit2 size={13} /> Edit
                                     </button>
                                     <button 
                                         onClick={() => handleDelete(trip._id)} 
-                                        className="flex-1 py-2 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-rose-200 dark:border-rose-900/30"
+                                        className="flex-1 py-2 bg-rose-50/70 dark:bg-rose-950/30 hover:bg-rose-100 text-rose-600 dark:text-rose-400 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border border-rose-200 dark:border-rose-900/30 shadow-xs"
                                     >
                                         <Trash2 size={13} /> Cancel
                                     </button>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))
                     )}
                 </div>
@@ -266,7 +278,7 @@ const Profile = () => {
             {activeTab === 'joined' && (
                 <div className="space-y-3.5">
                     {myJoinedTrips.length === 0 ? (
-                        <div className="text-center py-12 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6">
+                        <div className="text-center py-12 glass-panel rounded-3xl p-6">
                             <p className="text-zinc-500 text-sm">You haven't booked any rides yet.</p>
                         </div>
                     ) : (
@@ -274,7 +286,11 @@ const Profile = () => {
                             const dPhone = trip.creator?.phone?.replace(/\s+/g, '') || '';
                             const wa = `https://wa.me/${dPhone.startsWith('+') ? dPhone.slice(1) : dPhone}?text=Hi%20${encodeURIComponent(trip.creator?.name || 'Driver')},%20I'm%20joining%20your%20ride!`;
                             return (
-                                <div key={trip._id} className="bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-3.5">
+                                <motion.div 
+                                    whileHover={{ y: -2 }}
+                                    key={trip._id} 
+                                    className="glass-panel p-5 rounded-2xl shadow-md space-y-3.5"
+                                >
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <div className="font-bold text-base text-zinc-950 dark:text-white flex items-center gap-2">
@@ -283,17 +299,17 @@ const Profile = () => {
                                                 <span>{trip.destination}</span>
                                             </div>
                                             <div className="flex gap-3 text-xs text-zinc-500 mt-1 font-medium">
-                                                <span className="flex items-center gap-1"><Calendar size={13} /> {trip.date}</span>
-                                                <span className="flex items-center gap-1"><Clock size={13} /> {trip.time}</span>
+                                                <span className="flex items-center gap-1"><Calendar size={13} className="text-blue-600" /> {trip.date}</span>
+                                                <span className="flex items-center gap-1"><Clock size={13} className="text-blue-600" /> {trip.time}</span>
                                             </div>
                                         </div>
-                                        <span className="px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-md text-xs font-bold border border-emerald-200 dark:border-emerald-800/40">
+                                        <span className="px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-md text-xs font-bold border border-emerald-200/80 dark:border-emerald-800/40">
                                             Booked ✓
                                         </span>
                                     </div>
 
                                     {/* Driver Box with WhatsApp & Call */}
-                                    <div className="bg-zinc-50 dark:bg-zinc-950 p-3.5 rounded-xl border border-zinc-200/70 dark:border-zinc-800 flex justify-between items-center">
+                                    <div className="bg-zinc-50/70 dark:bg-zinc-950/70 p-3.5 rounded-xl border border-zinc-200/70 dark:border-zinc-800 flex justify-between items-center">
                                         <div>
                                             <p className="text-[10px] uppercase font-bold text-zinc-400">Driver</p>
                                             <p className="text-xs font-bold text-zinc-900 dark:text-white">{trip.creator?.name}</p>
@@ -302,7 +318,7 @@ const Profile = () => {
 
                                         {trip.creator?.phone && (
                                             <div className="flex items-center gap-2">
-                                                <a href={`tel:${dPhone}`} className="px-2.5 py-1 bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-lg text-xs font-bold flex items-center gap-1">
+                                                <a href={`tel:${dPhone}`} className="px-2.5 py-1 glass-panel text-zinc-800 dark:text-zinc-200 rounded-lg text-xs font-bold flex items-center gap-1 hover:bg-zinc-200 shadow-xs">
                                                     <Phone size={12} /> Call
                                                 </a>
                                                 <a href={wa} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-xs">
@@ -314,11 +330,11 @@ const Profile = () => {
 
                                     <button 
                                         onClick={() => handleLeaveTrip(trip._id)} 
-                                        className="w-full py-2 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border border-rose-200 dark:border-rose-900/30"
+                                        className="w-full py-2 bg-rose-50/70 dark:bg-rose-950/30 hover:bg-rose-100 text-rose-600 dark:text-rose-400 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 border border-rose-200 dark:border-rose-900/30 shadow-xs"
                                     >
                                         <UserMinus size={13} /> Cancel Seat
                                     </button>
-                                </div>
+                                </motion.div>
                             );
                         })
                     )}
@@ -327,13 +343,13 @@ const Profile = () => {
 
             {/* EDIT TRIP MODAL */}
             {editingTrip && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4" onClick={() => setEditingTrip(null)}>
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4" onClick={() => setEditingTrip(null)}>
                     <div 
-                        className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 w-full max-w-sm shadow-xl space-y-4"
+                        className="glass-panel p-6 rounded-3xl w-full max-w-sm shadow-2xl space-y-4"
                         onClick={e => e.stopPropagation()}
                     >
                         <div className="flex justify-between items-center">
-                            <h3 className="font-bold text-base text-zinc-900 dark:text-white">Edit Ride</h3>
+                            <h3 className="font-bold text-base text-zinc-950 dark:text-white">Edit Ride</h3>
                             <button onClick={() => setEditingTrip(null)} className="text-zinc-400 hover:text-zinc-600">
                                 <X size={18} />
                             </button>
@@ -362,7 +378,7 @@ const Profile = () => {
                                 </div>
                             </div>
 
-                            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition text-xs shadow-xs mt-2">
+                            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition text-xs shadow-md shadow-blue-600/20 mt-2">
                                 Save Changes
                             </button>
                         </form>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { LogIn, Mail, Lock, Eye, EyeOff, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 import api from '../config/api';
 import { enterGuestMode } from '../data/demoData';
 
@@ -37,12 +38,19 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[75vh] py-6">
-            <div className="w-full max-w-md bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors duration-200">
-                
+        <div className="relative flex items-center justify-center min-h-[75vh] py-6">
+            {/* Ambient Background Glow */}
+            <div className="absolute w-80 h-80 bg-blue-500/15 dark:bg-blue-600/15 rounded-full blur-[100px] pointer-events-none -z-10 animate-blob-1"></div>
+
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.96, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="w-full max-w-md glass-panel p-8 sm:p-9 rounded-3xl shadow-2xl transition-colors duration-200"
+            >
                 {/* Header */}
                 <div className="text-center mb-7">
-                    <div className="w-12 h-12 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 rounded-xl flex items-center justify-center font-bold mx-auto mb-3">
+                    <div className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-bold mx-auto mb-3 shadow-lg shadow-blue-600/30">
                         <LogIn size={20} />
                     </div>
                     <h2 className="text-2xl font-bold text-zinc-950 dark:text-white">
@@ -66,7 +74,7 @@ const Login = () => {
                                 required 
                                 value={formData.email}
                                 onChange={(e) => setFormData({...formData, email: e.target.value})} 
-                                className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm text-zinc-900 dark:text-white placeholder-zinc-400" 
+                                className="w-full pl-10 pr-4 py-2.5 bg-white/70 dark:bg-zinc-950/70 border border-zinc-200/80 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm text-zinc-900 dark:text-white placeholder-zinc-400 shadow-xs" 
                             />
                         </div>
                     </div>
@@ -83,7 +91,7 @@ const Login = () => {
                                 required 
                                 value={formData.password}
                                 onChange={(e) => setFormData({...formData, password: e.target.value})} 
-                                className="w-full pl-10 pr-10 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm text-zinc-900 dark:text-white placeholder-zinc-400" 
+                                className="w-full pl-10 pr-10 py-2.5 bg-white/70 dark:bg-zinc-950/70 border border-zinc-200/80 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm text-zinc-900 dark:text-white placeholder-zinc-400 shadow-xs" 
                             />
                             <button 
                                 type="button" 
@@ -98,7 +106,7 @@ const Login = () => {
                     <button 
                         disabled={loading} 
                         type="submit" 
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition shadow-xs active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2 text-sm"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition shadow-md shadow-blue-600/25 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2 text-sm"
                     >
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
@@ -107,10 +115,10 @@ const Login = () => {
                 {/* Divider */}
                 <div className="relative my-5">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-zinc-100 dark:border-zinc-800"></div>
+                        <div className="w-full border-t border-zinc-200/60 dark:border-zinc-800/80"></div>
                     </div>
                     <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider">
-                        <span className="bg-white dark:bg-zinc-900 px-3 text-zinc-400">
+                        <span className="glass-panel px-3 text-zinc-400 rounded-full">
                             External Visitor?
                         </span>
                     </div>
@@ -120,7 +128,7 @@ const Login = () => {
                 <button 
                     type="button"
                     onClick={handleGuestLogin}
-                    className="w-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-750 text-zinc-800 dark:text-zinc-200 font-bold py-2.5 rounded-xl transition text-xs flex items-center justify-center gap-1.5"
+                    className="w-full glass-panel hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-bold py-2.5 rounded-xl transition text-xs flex items-center justify-center gap-1.5 shadow-xs"
                 >
                     <Sparkles size={14} className="text-amber-500" /> Explore as Guest (Demo Mode)
                 </button>
@@ -128,7 +136,7 @@ const Login = () => {
                 <p className="text-center mt-5 text-xs text-zinc-500">
                     New student? <Link to="/signup" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Create account</Link>
                 </p>
-            </div>
+            </motion.div>
         </div>
     );
 };

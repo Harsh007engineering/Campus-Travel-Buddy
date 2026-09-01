@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { 
     Calendar, Clock, Search, ShieldCheck, Car, Lock, MapPin, 
     Loader2, Sparkles, Phone, MessageCircle, X, Users, ArrowRight,
-    SlidersHorizontal, CheckCircle2, ChevronRight
+    CheckCircle2, ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../config/api';
@@ -12,7 +12,7 @@ import { isGuestUser, getGuestTrips, createGuestTrip, joinGuestTrip } from '../d
 const Dashboard = () => {
     const [trips, setTrips] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterCategory, setFilterCategory] = useState('all'); // all, today, cheap
+    const [filterCategory, setFilterCategory] = useState('all');
     const [isPosting, setIsPosting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [newTrip, setNewTrip] = useState({
@@ -113,15 +113,23 @@ const Dashboard = () => {
         return true;
     });
 
-    const inputClass = "w-full px-3.5 py-2.5 rounded-xl border bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm";
+    const inputClass = "w-full px-3.5 py-2.5 rounded-xl border bg-white/70 dark:bg-zinc-950/70 border-zinc-200/80 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm shadow-xs";
 
     return (
-        <div className="space-y-6 sm:space-y-8">
+        <div className="relative space-y-6 sm:space-y-8">
+            {/* Ambient Background Glows */}
+            <div className="absolute top-10 right-[-80px] w-96 h-96 bg-blue-500/10 dark:bg-blue-600/10 rounded-full blur-[100px] pointer-events-none -z-10 animate-blob-1"></div>
+            <div className="absolute top-96 left-[-100px] w-96 h-96 bg-cyan-400/10 dark:bg-cyan-500/10 rounded-full blur-[110px] pointer-events-none -z-10 animate-blob-2"></div>
+
             {/* GUEST MODE NOTIFICATION BANNER */}
             {isGuest && (
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
+                <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="glass-panel border-amber-500/30 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm shadow-sm"
+                >
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-amber-500 text-white rounded-xl shrink-0">
+                        <div className="p-2 bg-amber-500 text-white rounded-xl shrink-0 shadow-xs">
                             <Sparkles size={18} />
                         </div>
                         <div>
@@ -137,25 +145,30 @@ const Dashboard = () => {
                             localStorage.removeItem('user');
                             window.location.href = '/login';
                         }} 
-                        className="shrink-0 px-3.5 py-1.5 bg-amber-200/50 hover:bg-amber-200 text-amber-900 dark:bg-amber-950/60 dark:text-amber-200 rounded-lg text-xs font-bold transition"
+                        className="shrink-0 px-3.5 py-1.5 bg-amber-200/60 hover:bg-amber-200 text-amber-950 dark:bg-amber-950/60 dark:text-amber-200 rounded-lg text-xs font-bold transition shadow-xs"
                     >
                         Exit Demo
                     </button>
-                </div>
+                </motion.div>
             )}
 
             <div className="grid lg:grid-cols-12 gap-8 items-start">
                 
-                {/* OFFER A RIDE FORM (Sidebar) */}
-                <div className="lg:col-span-4 bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm lg:sticky lg:top-24">
-                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100 dark:border-zinc-800">
+                {/* OFFER A RIDE FORM (Sidebar Glass Panel) */}
+                <motion.div 
+                    initial={{ opacity: 0, x: -15 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="lg:col-span-4 glass-panel p-6 rounded-3xl shadow-xl lg:sticky lg:top-24"
+                >
+                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-200/60 dark:border-zinc-800/80">
                         <div className="flex items-center gap-2">
-                            <div className="p-2 bg-blue-50 dark:bg-blue-950/50 text-blue-600 rounded-lg">
+                            <div className="p-2 bg-blue-50 dark:bg-blue-950/50 text-blue-600 rounded-xl shadow-xs">
                                 <Car size={18} />
                             </div>
-                            <h3 className="font-bold text-base text-zinc-900 dark:text-white">Offer a Ride</h3>
+                            <h3 className="font-bold text-base text-zinc-950 dark:text-white">Offer a Ride</h3>
                         </div>
-                        <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2.5 py-0.5 rounded-md">
+                        <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-md">
                             Post Trip
                         </span>
                     </div>
@@ -249,7 +262,7 @@ const Dashboard = () => {
                         <button 
                             disabled={isPosting} 
                             type="submit" 
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-xs disabled:opacity-60 disabled:cursor-not-allowed mt-2 active:scale-95 flex items-center justify-center gap-2 text-sm"
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow-md shadow-blue-600/20 disabled:opacity-60 disabled:cursor-not-allowed mt-2 active:scale-95 flex items-center justify-center gap-2 text-sm"
                         >
                             {isPosting ? (
                                 <><Loader2 size={16} className="animate-spin" /> Publishing...</>
@@ -258,11 +271,11 @@ const Dashboard = () => {
                             )}
                         </button>
                     </form>
-                </div>
+                </motion.div>
 
                 {/* TRIP SEARCH & FEED (Main Area) */}
                 <div className="lg:col-span-8 space-y-5">
-                    {/* Search & Filter Header */}
+                    {/* Search & Filter Header (Glass panel) */}
                     <div className="space-y-3">
                         <div className="relative">
                             <Search className="absolute left-3.5 top-3 text-zinc-400" size={18} />
@@ -271,7 +284,7 @@ const Dashboard = () => {
                                 placeholder="Search by destination or pickup point..." 
                                 value={searchTerm} 
                                 onChange={(e) => setSearchTerm(e.target.value)} 
-                                className="w-full pl-10 pr-9 py-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xs focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm font-medium text-zinc-900 dark:text-white placeholder-zinc-400" 
+                                className="w-full pl-10 pr-9 py-2.5 glass-panel rounded-xl shadow-xs focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm font-medium text-zinc-900 dark:text-white placeholder-zinc-400" 
                             />
                             {searchTerm && (
                                 <button 
@@ -294,10 +307,10 @@ const Dashboard = () => {
                                     key={cat.id}
                                     type="button"
                                     onClick={() => setFilterCategory(cat.id)}
-                                    className={`px-3 py-1.5 rounded-lg transition ${
+                                    className={`px-3 py-1.5 rounded-lg transition shadow-xs ${
                                         filterCategory === cat.id
                                             ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold'
-                                            : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300'
+                                            : 'glass-panel text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white'
                                     }`}
                                 >
                                     {cat.label}
@@ -313,7 +326,7 @@ const Dashboard = () => {
                     {isLoading && (
                         <div className="space-y-3">
                             {[1, 2, 3].map(n => (
-                                <div key={n} className="bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 animate-pulse space-y-3">
+                                <div key={n} className="glass-panel p-5 rounded-2xl animate-pulse space-y-3">
                                     <div className="h-4 w-48 bg-zinc-200 dark:bg-zinc-800 rounded"></div>
                                     <div className="h-3 w-32 bg-zinc-100 dark:bg-zinc-800/60 rounded"></div>
                                 </div>
@@ -323,7 +336,7 @@ const Dashboard = () => {
 
                     {/* Empty State */}
                     {!isLoading && filteredTrips.length === 0 && (
-                        <div className="text-center py-14 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 space-y-2">
+                        <div className="text-center py-14 glass-panel rounded-3xl p-6 space-y-2">
                             <MapPin size={32} className="text-zinc-300 dark:text-zinc-700 mx-auto" />
                             <h4 className="font-bold text-zinc-900 dark:text-white text-base">No upcoming rides match</h4>
                             <p className="text-xs text-zinc-500 max-w-xs mx-auto">
@@ -332,9 +345,10 @@ const Dashboard = () => {
                         </div>
                     )}
 
-                    {/* TRIP CARDS LIST */}
+                    {/* TRIP CARDS LIST (Framer Motion Stagger + Glass) */}
+                    <AnimatePresence>
                     <div className="space-y-3.5">
-                        {!isLoading && filteredTrips.map((trip) => {
+                        {!isLoading && filteredTrips.map((trip, idx) => {
                             const isCreator = currentUser && trip.creator && trip.creator._id === currentUser.id;
                             const isPassenger = currentUser && trip.passengers?.some(p => p._id === currentUser.id);
                             const hasJoinedOrCreated = isCreator || isPassenger;
@@ -343,12 +357,16 @@ const Dashboard = () => {
                             const waLink = `https://wa.me/${cleanPhone.startsWith('+') ? cleanPhone.slice(1) : cleanPhone}?text=Hi%20${encodeURIComponent(trip.creator?.name || 'Driver')},%20joining%20your%20ride%20to%20${encodeURIComponent(trip.destination)}!`;
 
                             return (
-                                <div 
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 15 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3, delay: idx * 0.04 }}
+                                    whileHover={{ y: -3, scale: 1.008 }}
                                     key={trip._id} 
-                                    className={`bg-white dark:bg-zinc-900 p-5 rounded-2xl border transition-all shadow-xs ${
+                                    className={`glass-panel p-5 rounded-2xl transition-all shadow-md ${
                                         isCreator 
                                             ? 'border-blue-500/80 ring-1 ring-blue-500/20' 
-                                            : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
+                                            : 'hover:border-blue-500/40'
                                     }`}
                                 >
                                     {/* Route & Price Row */}
@@ -361,10 +379,10 @@ const Dashboard = () => {
                                             </div>
                                             <div className="flex items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400 font-medium mt-1">
                                                 <span className="flex items-center gap-1">
-                                                    <Calendar size={13} className="text-zinc-400" /> {trip.date}
+                                                    <Calendar size={13} className="text-blue-600" /> {trip.date}
                                                 </span>
                                                 <span className="flex items-center gap-1">
-                                                    <Clock size={13} className="text-zinc-400" /> {trip.time}
+                                                    <Clock size={13} className="text-blue-600" /> {trip.time}
                                                 </span>
                                             </div>
                                         </div>
@@ -378,13 +396,13 @@ const Dashboard = () => {
                                     </div>
 
                                     {/* Driver & Actions Row */}
-                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-3 border-t border-zinc-100 dark:border-zinc-800/80">
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-3 border-t border-zinc-200/50 dark:border-zinc-800/80">
                                         <div className="flex items-center gap-2.5">
-                                            <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 flex items-center justify-center font-bold text-xs">
+                                            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
                                                 {trip.creator?.name?.charAt(0) || 'D'}
                                             </div>
                                             <div>
-                                                <p className="text-xs font-bold text-zinc-900 dark:text-white leading-tight">
+                                                <p className="text-xs font-bold text-zinc-950 dark:text-white leading-tight">
                                                     {trip.creator?.name || 'Student Host'}
                                                 </p>
                                                 <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-0.5 mt-0.5">
@@ -399,12 +417,13 @@ const Dashboard = () => {
                                             </span>
 
                                             {!isCreator && !isPassenger && trip.availableSeats > 0 && (
-                                                <button 
+                                                <motion.button 
+                                                    whileTap={{ scale: 0.95 }}
                                                     onClick={() => handleJoinTrip(trip._id)} 
-                                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition text-xs active:scale-95 shadow-xs"
+                                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition text-xs shadow-sm"
                                                 >
                                                     Claim Seat
-                                                </button>
+                                                </motion.button>
                                             )}
 
                                             {!isCreator && isPassenger && (
@@ -429,7 +448,11 @@ const Dashboard = () => {
 
                                     {/* Unlocked Contact Details for Confirmed Co-Travelers */}
                                     {hasJoinedOrCreated && trip.creator && (
-                                        <div className="mt-3.5 p-3.5 bg-zinc-50 dark:bg-zinc-950 rounded-xl border border-zinc-200/80 dark:border-zinc-800 space-y-2 text-xs">
+                                        <motion.div 
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            className="mt-3.5 p-3.5 bg-zinc-50/80 dark:bg-zinc-950/80 rounded-xl border border-zinc-200/80 dark:border-zinc-800 space-y-2 text-xs"
+                                        >
                                             <div className="flex justify-between items-center text-zinc-500 font-medium">
                                                 <span className="text-[11px] uppercase font-bold text-zinc-400 flex items-center gap-1">
                                                     <Lock size={12} /> Contact Details (Mutual)
@@ -482,12 +505,13 @@ const Dashboard = () => {
                                                     </div>
                                                 </div>
                                             )}
-                                        </div>
+                                        </motion.div>
                                     )}
-                                </div>
+                                </motion.div>
                             );
                         })}
                     </div>
+                    </AnimatePresence>
                 </div>
             </div>
         </div>

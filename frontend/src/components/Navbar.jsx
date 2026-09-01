@@ -26,7 +26,7 @@ const Navbar = () => {
 
     return (
         <header className="sticky top-0 z-50 w-full pt-3 px-3 sm:px-6">
-            <div className="max-w-6xl mx-auto rounded-2xl border transition-all duration-200 backdrop-blur-2xl bg-white/85 dark:bg-[#0d0d11]/85 border-zinc-200/90 dark:border-zinc-800/80 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.4)] px-4 sm:px-5">
+            <div className="max-w-6xl mx-auto rounded-2xl glass-nav transition-all duration-300 px-4 sm:px-5">
                 <div className="flex justify-between items-center h-14 sm:h-16">
                     {/* Brand Emblem & Wordmark */}
                     <Link to="/" className="flex items-center gap-2.5 group">
