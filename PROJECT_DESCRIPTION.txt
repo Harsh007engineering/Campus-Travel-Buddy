@@ -1,0 +1,12 @@
+=== GITHUB REPOSITORY ABOUT SECTION (Short & Punchy) ===
+Campus Travel Buddy is an exclusive, full-stack peer-to-peer campus carpooling network built for university students. Features institutional email authentication, interactive split-fare calculator, student safety SOS toolkit, one-tap UPI settlement, and a recruiter guest sandbox. Built with React 19, Express 5, Tailwind v4, and MongoDB Atlas.
+
+=== PORTFOLIO / RESUME / LINKEDIN PROJECT DESCRIPTION (Detailed) ===
+Campus Travel Buddy — Full-Stack University Mobility & Carpooling Platform
+Live URL: https://campus-travel-buddy-ui.vercel.app | GitHub: https://github.com/Harsh007engineering/Campus-Travel-Buddy
+
+• Architected and deployed a production MERN-stack carpooling platform eliminating high solo transit costs for university students traveling to railway stations and airports.
+• Built institutional domain-restricted authentication (@vitapstudent.ac.in) via JWT and BcryptJS, alongside an isolated Guest Demo sandbox allowing recruiters to test full ride-booking workflows without college credentials.
+• Engineered student-first fintech and safety modules: an interactive Fare Split & Savings Calculator, a 24/7 Campus SOS emergency desk with formatted WhatsApp trip check-ins, and peer-to-peer UPI deep-links (GPay/PhonePe/Paytm) with 0% platform fees.
+• Designed a responsive, high-contrast mobility interface in Tailwind CSS v4 featuring Dark/Light themes, custom SVG vector branding, specular frosted glassmorphism, and Framer Motion micro-interactions.
+• Deployed client and serverless Express 5 API on Vercel with automated CI/CD and sub-400ms production builds.
