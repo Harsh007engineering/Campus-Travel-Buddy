@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { CarFront, LogOut, User, Menu, X, Sparkles, PlusCircle } from 'lucide-react';
+import { Car, LogOut, User, Menu, X, Sparkles } from 'lucide-react';
 import { isGuestUser, enterGuestMode } from '../data/demoData';
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
@@ -13,13 +13,12 @@ const Navbar = () => {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { theme } = useTheme();
-    const isDark = theme === 'dark';
     const isGuest = isGuestUser();
 
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        toast.success(isGuest ? 'Exited demo mode' : 'Logged out successfully');
+        toast.success(isGuest ? 'Exited demo mode' : 'Logged out');
         setMobileMenuOpen(false);
         navigate('/login');
     };
@@ -27,66 +26,64 @@ const Navbar = () => {
     const isActive = (path) => location.pathname === path;
 
     return (
-        <header className="sticky top-0 z-50 w-full transition-colors duration-300 backdrop-blur-md border-b bg-white/80 dark:bg-[#090714]/80 border-slate-200 dark:border-purple-900/30 shadow-sm dark:shadow-2xl">
+        <header className="sticky top-0 z-50 w-full transition-colors duration-200 backdrop-blur-xl border-b bg-white/90 dark:bg-zinc-950/90 border-zinc-200/80 dark:border-zinc-800/80 shadow-xs">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Brand */}
                     <Link to="/" className="flex items-center gap-2.5 group">
-                        <div className="bg-gradient-to-tr from-brand to-indigo-500 text-white p-2 rounded-xl shadow-md shadow-brand/20 group-hover:scale-105 transition-transform duration-200">
-                            <CarFront size={22} />
+                        <div className="w-9 h-9 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 rounded-xl flex items-center justify-center font-black shadow-sm group-hover:scale-105 transition-transform duration-200">
+                            <Car size={18} strokeWidth={2.5} />
                         </div>
                         <div className="flex flex-col">
-                            <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white leading-none">
-                                Campus Travel Buddy
+                            <span className="font-extrabold text-base sm:text-lg tracking-tight text-zinc-900 dark:text-white leading-tight">
+                                Campus<span className="text-blue-600 dark:text-blue-500">Buddy</span>
                             </span>
-                            <span className="text-[10px] text-slate-500 dark:text-purple-300/60 font-semibold tracking-wider uppercase mt-0.5">
-                                Campus Carpooling
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-wider -mt-0.5">
+                                Peer Carpooling
                             </span>
                         </div>
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-4">
+                    <div className="hidden md:flex items-center gap-3">
                         {token ? (
                             <>
                                 {isGuest && (
-                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 dark:bg-brand/20 text-amber-600 dark:text-purple-200 border border-amber-500/20 dark:border-brand/40 rounded-full text-xs font-semibold">
-                                        <Sparkles size={13} className="text-amber-500 dark:text-brand" /> Demo Guest
+                                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-lg text-xs font-bold">
+                                        <Sparkles size={13} /> Demo Mode
                                     </div>
                                 )}
 
                                 <Link 
                                     to="/dashboard" 
-                                    className={`px-3.5 py-2 rounded-xl text-sm font-semibold transition ${
+                                    className={`px-3.5 py-2 rounded-lg text-sm font-semibold transition ${
                                         isActive('/dashboard') 
-                                            ? 'bg-brand/10 text-brand dark:bg-brand/20 dark:text-white' 
-                                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-purple-950/30'
+                                            ? 'bg-zinc-100 text-zinc-950 dark:bg-zinc-800 dark:text-white' 
+                                            : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100/60 dark:hover:bg-zinc-900'
                                     }`}
                                 >
-                                    Dashboard
+                                    Find Rides
                                 </Link>
 
                                 <Link 
                                     to="/profile" 
-                                    className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition ${
+                                    className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-semibold transition ${
                                         isActive('/profile') 
-                                            ? 'bg-brand/10 text-brand dark:bg-brand/20 dark:text-white' 
-                                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-purple-950/30'
+                                            ? 'bg-zinc-100 text-zinc-950 dark:bg-zinc-800 dark:text-white' 
+                                            : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100/60 dark:hover:bg-zinc-900'
                                     }`}
                                 >
-                                    <User size={16} />
-                                    <span>{user?.name?.split(' ')[0] || 'Profile'}</span>
+                                    <User size={15} />
+                                    <span>{user?.name?.split(' ')[0] || 'My Trips'}</span>
                                 </Link>
 
-                                {/* Theme toggle */}
                                 <ThemeToggle />
 
-                                {/* Logout */}
                                 <button 
                                     onClick={handleLogout} 
-                                    className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-100 dark:hover:bg-rose-500/20 rounded-xl transition border border-rose-200 dark:border-rose-500/20"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-zinc-500 hover:text-rose-600 dark:text-zinc-400 dark:hover:text-rose-400 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 transition ml-1"
                                 >
-                                    <LogOut size={14} /> {isGuest ? 'Exit Demo' : 'Logout'}
+                                    <LogOut size={14} /> {isGuest ? 'Exit Demo' : 'Sign Out'}
                                 </button>
                             </>
                         ) : (
@@ -95,32 +92,32 @@ const Navbar = () => {
                                     type="button"
                                     onClick={() => {
                                         enterGuestMode();
-                                        toast.success('Welcome to Guest Mode! Exploring with simulated data ✨');
+                                        toast.success('Entering Guest Demo Mode ✨');
                                         navigate('/dashboard');
                                     }}
-                                    className="flex items-center gap-1.5 text-slate-700 dark:text-purple-300 hover:text-brand dark:hover:text-white font-semibold text-xs transition px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-purple-950/40 border border-slate-200 dark:border-purple-800/40 hover:border-brand/40"
+                                    className="flex items-center gap-1.5 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white font-semibold text-xs transition px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800"
                                 >
-                                    <Sparkles size={14} className="text-brand" /> Guest Demo
+                                    <Sparkles size={13} className="text-amber-500" /> Guest Demo
                                 </button>
 
                                 <ThemeToggle />
 
                                 <Link 
                                     to="/login" 
-                                    className={`px-4 py-2 text-sm font-semibold transition rounded-xl ${
+                                    className={`px-3.5 py-2 text-sm font-semibold transition rounded-lg ${
                                         isActive('/login') 
-                                            ? 'text-brand dark:text-white' 
-                                            : 'text-slate-700 dark:text-slate-300 hover:text-brand dark:hover:text-white'
+                                            ? 'text-zinc-950 dark:text-white font-bold' 
+                                            : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white'
                                     }`}
                                 >
-                                    Login
+                                    Sign In
                                 </Link>
 
                                 <Link 
                                     to="/signup" 
-                                    className="px-5 py-2.5 bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-xl transition-all shadow-md shadow-brand/25 active:scale-95"
+                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition shadow-xs active:scale-95"
                                 >
-                                    Sign Up
+                                    Get Started
                                 </Link>
                             </>
                         )}
@@ -130,52 +127,44 @@ const Navbar = () => {
                     <div className="flex md:hidden items-center gap-2">
                         <ThemeToggle />
                         <button 
-                            className="p-2 text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
+                            className="p-2 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-lg transition"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            aria-label="Toggle menu"
+                            aria-label="Toggle navigation"
                         >
-                            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
                     </div>
                 </div>
 
-                {/* Mobile Dropdown */}
+                {/* Mobile Navigation Dropdown */}
                 {mobileMenuOpen && (
-                    <div className="md:hidden pb-5 pt-2 space-y-2 border-t border-slate-200 dark:border-purple-900/30 animate-in slide-in-from-top-2">
+                    <div className="md:hidden pb-4 pt-2 space-y-1.5 border-t border-zinc-200 dark:border-zinc-800">
                         {token ? (
                             <>
                                 {isGuest && (
-                                    <div className="px-4 py-2 text-xs font-semibold text-amber-600 dark:text-purple-200 flex items-center gap-1.5">
-                                        <Sparkles size={13} className="text-brand" /> Guest Mode Active
+                                    <div className="px-3 py-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                                        <Sparkles size={13} /> Guest Demo Mode Active
                                     </div>
                                 )}
                                 <Link 
                                     to="/dashboard" 
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className={`block py-3 px-4 rounded-xl font-semibold text-sm ${
-                                        isActive('/dashboard') 
-                                            ? 'bg-brand/10 text-brand dark:bg-brand/20 dark:text-white' 
-                                            : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-purple-950/30'
-                                    }`}
+                                    className="block py-2.5 px-3 rounded-lg font-semibold text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900"
                                 >
-                                    Dashboard
+                                    Find Rides
                                 </Link>
                                 <Link 
                                     to="/profile" 
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className={`flex items-center gap-2 py-3 px-4 rounded-xl font-semibold text-sm ${
-                                        isActive('/profile') 
-                                            ? 'bg-brand/10 text-brand dark:bg-brand/20 dark:text-white' 
-                                            : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-purple-950/30'
-                                    }`}
+                                    className="flex items-center gap-2 py-2.5 px-3 rounded-lg font-semibold text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900"
                                 >
-                                    <User size={16} /> Profile ({user?.name || 'User'})
+                                    <User size={16} /> My Trips & Profile
                                 </Link>
                                 <button 
                                     onClick={handleLogout} 
-                                    className="w-full flex items-center justify-center gap-2 py-3 px-4 text-sm font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 rounded-xl border border-rose-200 dark:border-rose-500/20 mt-2"
+                                    className="w-full flex items-center justify-center gap-2 py-2.5 px-3 text-sm font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 rounded-lg border border-rose-200 dark:border-rose-500/20 mt-2"
                                 >
-                                    <LogOut size={16} /> {isGuest ? 'Exit Demo Mode' : 'Logout'}
+                                    <LogOut size={16} /> {isGuest ? 'Exit Demo' : 'Sign Out'}
                                 </button>
                             </>
                         ) : (
@@ -184,26 +173,26 @@ const Navbar = () => {
                                     onClick={() => {
                                         enterGuestMode();
                                         setMobileMenuOpen(false);
-                                        toast.success('Welcome to Guest Mode! Exploring with simulated data ✨');
+                                        toast.success('Entering Guest Demo Mode ✨');
                                         navigate('/dashboard');
                                     }}
-                                    className="w-full flex items-center justify-center gap-2 py-3 px-4 text-sm font-semibold text-brand dark:text-purple-300 bg-slate-100 dark:bg-purple-950/40 rounded-xl border border-slate-200 dark:border-purple-800/40 mb-2"
+                                    className="w-full flex items-center justify-center gap-2 py-2.5 px-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-900 rounded-lg mb-2"
                                 >
-                                    <Sparkles size={16} className="text-brand" /> Explore as Guest (Demo)
+                                    <Sparkles size={15} className="text-amber-500" /> Explore as Guest (Demo)
                                 </button>
                                 <Link 
                                     to="/login" 
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="block py-3 px-4 rounded-xl text-center font-semibold text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-purple-950/30"
+                                    className="block py-2.5 px-3 rounded-lg text-center font-semibold text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
                                 >
-                                    Login
+                                    Sign In
                                 </Link>
                                 <Link 
                                     to="/signup" 
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="block py-3 px-4 rounded-xl text-center font-bold text-sm bg-brand text-white shadow-md shadow-brand/20 mt-2"
+                                    className="block py-2.5 px-3 rounded-lg text-center font-bold text-sm bg-blue-600 text-white shadow-xs mt-1"
                                 >
-                                    Sign Up
+                                    Get Started
                                 </Link>
                             </>
                         )}

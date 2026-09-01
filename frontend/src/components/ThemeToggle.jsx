@@ -12,17 +12,17 @@ const ThemeToggle = ({ className = '' }) => {
             onClick={toggleTheme}
             aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
             title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-            className={`relative p-2 rounded-xl border transition-all duration-300 flex items-center justify-center ${
+            className={`relative p-2 rounded-xl border transition-all duration-200 flex items-center justify-center ${
                 isDark
-                    ? 'bg-[#1a1635] text-amber-300 border-purple-800/40 hover:bg-[#251f47] hover:border-amber-400/40 shadow-sm'
-                    : 'bg-white text-indigo-600 border-slate-200 hover:bg-slate-50 hover:border-indigo-300 shadow-sm'
+                    ? 'bg-zinc-900 text-amber-300 border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 shadow-sm'
+                    : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-100 hover:text-zinc-900 shadow-sm'
             } ${className}`}
         >
-            <div className="relative w-5 h-5 flex items-center justify-center">
+            <div className="w-4 h-4 flex items-center justify-center">
                 {isDark ? (
-                    <Sun size={18} className="transition-transform duration-300 rotate-0 hover:rotate-45" />
+                    <Sun size={16} className="text-amber-400" />
                 ) : (
-                    <Moon size={18} className="transition-transform duration-300 -rotate-12 hover:rotate-0 text-slate-700" />
+                    <Moon size={16} className="text-zinc-700" />
                 )}
             </div>
         </button>

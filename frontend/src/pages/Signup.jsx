@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { UserPlus, User, Mail, Lock, Phone, Eye, EyeOff, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { UserPlus, User, Mail, Lock, Phone, Eye, EyeOff, Sparkles, ShieldCheck } from 'lucide-react';
 import api from '../config/api';
 import { enterGuestMode } from '../data/demoData';
 
@@ -16,10 +16,9 @@ const Signup = () => {
         setLoading(true);
         try {
             const response = await api.post('/auth/signup', formData);
-            // Auto-login: backend returns token + user on signup
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
-            toast.success('Account created! Welcome aboard! 🎉');
+            toast.success('Account created! Welcome to the club! 🎉');
             navigate('/dashboard');
         } catch (error) {
             const msg = error.response?.data?.error 
@@ -31,35 +30,35 @@ const Signup = () => {
         }
     };
 
-    const inputClass = "w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-[#0f0b22] border border-slate-200 dark:border-purple-900/40 rounded-xl focus:ring-2 focus:ring-brand focus:border-transparent outline-none transition text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500";
+    const inputClass = "w-full pl-10 pr-4 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm text-zinc-900 dark:text-white placeholder-zinc-400";
 
     return (
         <div className="flex items-center justify-center min-h-[80vh] py-6">
-            <div className="w-full max-w-md bg-white dark:bg-[#15102a]/90 backdrop-blur-xl p-8 sm:p-9 rounded-3xl shadow-xl dark:shadow-2xl border border-slate-200 dark:border-purple-900/50 transition-colors duration-300">
+            <div className="w-full max-w-md bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors duration-200">
                 
                 {/* Header */}
                 <div className="text-center mb-6">
-                    <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-brand to-indigo-500 text-white rounded-2xl mb-4 shadow-lg shadow-brand/25">
-                        <UserPlus size={26} />
+                    <div className="w-12 h-12 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 rounded-xl flex items-center justify-center font-bold mx-auto mb-3">
+                        <UserPlus size={20} />
                     </div>
-                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                        Join the Club
+                    <h2 className="text-2xl font-bold text-zinc-950 dark:text-white">
+                        Create student account
                     </h2>
-                    <p className="text-xs sm:text-sm text-slate-500 dark:text-purple-200/70 mt-1.5 flex items-center justify-center gap-1">
-                        <ShieldCheck size={14} className="text-emerald-500" /> Exclusive to verified college students
+                    <p className="text-xs text-zinc-500 mt-1 flex items-center justify-center gap-1">
+                        <ShieldCheck size={13} className="text-emerald-600" /> Exclusive to college students
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-3.5">
+                <form onSubmit={handleSubmit} className="space-y-3">
                     <div>
-                        <label className="text-xs font-bold text-slate-600 dark:text-purple-300/70 uppercase tracking-wider mb-1 block">
+                        <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1 block">
                             Full Name
                         </label>
                         <div className="relative">
-                            <User className="absolute left-4 top-3.5 text-slate-400 dark:text-slate-500" size={18} />
+                            <User className="absolute left-3.5 top-3 text-zinc-400" size={16} />
                             <input 
                                 type="text" 
-                                placeholder="Harsh Vardhan" 
+                                placeholder="Your Name" 
                                 required 
                                 value={formData.name} 
                                 onChange={(e) => setFormData({...formData, name: e.target.value})} 
@@ -69,11 +68,11 @@ const Signup = () => {
                     </div>
                     
                     <div>
-                        <label className="text-xs font-bold text-slate-600 dark:text-purple-300/70 uppercase tracking-wider mb-1 block">
+                        <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1 block">
                             University Email
                         </label>
                         <div className="relative">
-                            <Mail className="absolute left-4 top-3.5 text-slate-400 dark:text-slate-500" size={18} />
+                            <Mail className="absolute left-3.5 top-3 text-zinc-400" size={16} />
                             <input 
                                 type="email" 
                                 placeholder="yourname.24bce@vitapstudent.ac.in" 
@@ -86,11 +85,11 @@ const Signup = () => {
                     </div>
 
                     <div>
-                        <label className="text-xs font-bold text-slate-600 dark:text-purple-300/70 uppercase tracking-wider mb-1 block">
-                            Phone Number
+                        <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1 block">
+                            WhatsApp / Phone Number
                         </label>
                         <div className="relative">
-                            <Phone className="absolute left-4 top-3.5 text-slate-400 dark:text-slate-500" size={18} />
+                            <Phone className="absolute left-3.5 top-3 text-zinc-400" size={16} />
                             <input 
                                 type="tel" 
                                 placeholder="+91 98765 43210" 
@@ -103,26 +102,26 @@ const Signup = () => {
                     </div>
                     
                     <div>
-                        <label className="text-xs font-bold text-slate-600 dark:text-purple-300/70 uppercase tracking-wider mb-1 block">
-                            Password
+                        <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1 block">
+                            Password (min 6 characters)
                         </label>
                         <div className="relative">
-                            <Lock className="absolute left-4 top-3.5 text-slate-400 dark:text-slate-500" size={18} />
+                            <Lock className="absolute left-3.5 top-3 text-zinc-400" size={16} />
                             <input 
                                 type={showPassword ? 'text' : 'password'} 
-                                placeholder="Min 6 characters" 
+                                placeholder="Create password" 
                                 required 
                                 minLength={6}
                                 value={formData.password} 
                                 onChange={(e) => setFormData({...formData, password: e.target.value})} 
-                                className="w-full pl-11 pr-11 py-3 bg-slate-50 dark:bg-[#0f0b22] border border-slate-200 dark:border-purple-900/40 rounded-xl focus:ring-2 focus:ring-brand focus:border-transparent outline-none transition text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500" 
+                                className="w-full pl-10 pr-10 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm text-zinc-900 dark:text-white placeholder-zinc-400" 
                             />
                             <button 
                                 type="button" 
                                 onClick={() => setShowPassword(!showPassword)} 
-                                className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition"
+                                className="absolute right-3 top-3 text-zinc-400 hover:text-zinc-600"
                             >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                             </button>
                         </div>
                     </div>
@@ -130,30 +129,20 @@ const Signup = () => {
                     <button 
                         disabled={loading} 
                         type="submit" 
-                        className="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3.5 rounded-xl transition-all shadow-md shadow-brand/25 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition shadow-xs active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2 text-sm"
                     >
-                        {loading ? (
-                            <>
-                                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                                </svg>
-                                Creating Account...
-                            </>
-                        ) : (
-                            <>Create Account <ArrowRight size={16} /></>
-                        )}
+                        {loading ? 'Creating account...' : 'Create Account'}
                     </button>
                 </form>
 
                 {/* Divider */}
-                <div className="relative my-6">
+                <div className="relative my-5">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-slate-200 dark:border-slate-800"></div>
+                        <div className="w-full border-t border-zinc-100 dark:border-zinc-800"></div>
                     </div>
-                    <div className="relative flex justify-center text-[11px] uppercase tracking-wider">
-                        <span className="bg-white dark:bg-[#15102a] px-3 text-slate-400 dark:text-slate-500 font-bold">
-                            Not a VIT-AP Student?
+                    <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider">
+                        <span className="bg-white dark:bg-zinc-900 px-3 text-zinc-400">
+                            Not from VIT-AP?
                         </span>
                     </div>
                 </div>
@@ -163,16 +152,16 @@ const Signup = () => {
                     type="button"
                     onClick={() => {
                         enterGuestMode();
-                        toast.success('Welcome to Guest Mode! Exploring with simulated data ✨');
+                        toast.success('Welcome to Guest Demo Mode ✨');
                         navigate('/dashboard');
                     }}
-                    className="w-full bg-slate-50 hover:bg-slate-100 dark:bg-[#0f0b22] dark:hover:bg-[#1b153b] text-slate-800 dark:text-purple-200 border border-slate-200 dark:border-purple-900/60 font-bold py-3 rounded-xl transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
+                    className="w-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-750 text-zinc-800 dark:text-zinc-200 font-bold py-2.5 rounded-xl transition text-xs flex items-center justify-center gap-1.5"
                 >
-                    <Sparkles size={16} className="text-brand" /> Continue as Guest (Demo Mode)
+                    <Sparkles size={14} className="text-amber-500" /> Continue as Guest (Demo Mode)
                 </button>
 
-                <p className="text-center mt-6 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                    Already registered? <Link to="/login" className="text-brand font-bold hover:underline">Sign in instead</Link>
+                <p className="text-center mt-5 text-xs text-zinc-500">
+                    Already registered? <Link to="/login" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Sign in</Link>
                 </p>
             </div>
         </div>

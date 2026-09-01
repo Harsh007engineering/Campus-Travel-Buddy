@@ -13,7 +13,7 @@ const Login = () => {
 
     const handleGuestLogin = () => {
         enterGuestMode();
-        toast.success('Welcome to Guest Mode! Exploring with simulated data ✨');
+        toast.success('Welcome to Guest Demo Mode ✨');
         navigate('/dashboard');
     };
 
@@ -38,59 +38,59 @@ const Login = () => {
 
     return (
         <div className="flex items-center justify-center min-h-[75vh] py-6">
-            <div className="w-full max-w-md bg-white dark:bg-[#15102a]/90 backdrop-blur-xl p-8 sm:p-9 rounded-3xl shadow-xl dark:shadow-2xl border border-slate-200 dark:border-purple-900/50 transition-colors duration-300">
+            <div className="w-full max-w-md bg-white dark:bg-zinc-900 p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm transition-colors duration-200">
                 
                 {/* Header */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-brand to-indigo-500 text-white rounded-2xl mb-4 shadow-lg shadow-brand/25">
-                        <LogIn size={26} />
+                <div className="text-center mb-7">
+                    <div className="w-12 h-12 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 rounded-xl flex items-center justify-center font-bold mx-auto mb-3">
+                        <LogIn size={20} />
                     </div>
-                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                        Sign In
+                    <h2 className="text-2xl font-bold text-zinc-950 dark:text-white">
+                        Sign in to your account
                     </h2>
-                    <p className="text-xs sm:text-sm text-slate-500 dark:text-purple-200/70 mt-1.5 flex items-center justify-center gap-1">
-                        <ShieldCheck size={14} className="text-emerald-500" /> Enter your campus student credentials
+                    <p className="text-xs text-zinc-500 mt-1 flex items-center justify-center gap-1">
+                        <ShieldCheck size={13} className="text-emerald-600" /> University email required
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-3.5">
                     <div>
-                        <label className="text-xs font-bold text-slate-600 dark:text-purple-300/70 uppercase tracking-wider mb-1 block">
+                        <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1 block">
                             Campus Email
                         </label>
                         <div className="relative">
-                            <Mail className="absolute left-4 top-3.5 text-slate-400 dark:text-slate-500" size={18} />
+                            <Mail className="absolute left-3.5 top-3 text-zinc-400" size={16} />
                             <input 
                                 type="email" 
                                 placeholder="name.24bce@vitapstudent.ac.in" 
                                 required 
                                 value={formData.email}
                                 onChange={(e) => setFormData({...formData, email: e.target.value})} 
-                                className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-[#0f0b22] border border-slate-200 dark:border-purple-900/40 rounded-xl focus:ring-2 focus:ring-brand focus:border-transparent outline-none transition text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500" 
+                                className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm text-zinc-900 dark:text-white placeholder-zinc-400" 
                             />
                         </div>
                     </div>
                     
                     <div>
-                        <label className="text-xs font-bold text-slate-600 dark:text-purple-300/70 uppercase tracking-wider mb-1 block">
+                        <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1 block">
                             Password
                         </label>
                         <div className="relative">
-                            <Lock className="absolute left-4 top-3.5 text-slate-400 dark:text-slate-500" size={18} />
+                            <Lock className="absolute left-3.5 top-3 text-zinc-400" size={16} />
                             <input 
                                 type={showPassword ? 'text' : 'password'} 
-                                placeholder="Enter your password" 
+                                placeholder="Enter password" 
                                 required 
                                 value={formData.password}
                                 onChange={(e) => setFormData({...formData, password: e.target.value})} 
-                                className="w-full pl-11 pr-11 py-3 bg-slate-50 dark:bg-[#0f0b22] border border-slate-200 dark:border-purple-900/40 rounded-xl focus:ring-2 focus:ring-brand focus:border-transparent outline-none transition text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500" 
+                                className="w-full pl-10 pr-10 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition text-sm text-zinc-900 dark:text-white placeholder-zinc-400" 
                             />
                             <button 
                                 type="button" 
                                 onClick={() => setShowPassword(!showPassword)} 
-                                className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition"
+                                className="absolute right-3 top-3 text-zinc-400 hover:text-zinc-600"
                             >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                             </button>
                         </div>
                     </div>
@@ -98,30 +98,20 @@ const Login = () => {
                     <button 
                         disabled={loading} 
                         type="submit" 
-                        className="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3.5 rounded-xl transition-all shadow-md shadow-brand/25 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition shadow-xs active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2 text-sm"
                     >
-                        {loading ? (
-                            <>
-                                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                                </svg>
-                                Authenticating...
-                            </>
-                        ) : (
-                            <>Sign In to Dashboard <ArrowRight size={16} /></>
-                        )}
+                        {loading ? 'Signing in...' : 'Sign In'}
                     </button>
                 </form>
 
                 {/* Divider */}
-                <div className="relative my-6">
+                <div className="relative my-5">
                     <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-slate-200 dark:border-slate-800"></div>
+                        <div className="w-full border-t border-zinc-100 dark:border-zinc-800"></div>
                     </div>
-                    <div className="relative flex justify-center text-[11px] uppercase tracking-wider">
-                        <span className="bg-white dark:bg-[#15102a] px-3 text-slate-400 dark:text-slate-500 font-bold">
-                            External or Recruiter?
+                    <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider">
+                        <span className="bg-white dark:bg-zinc-900 px-3 text-zinc-400">
+                            External Visitor?
                         </span>
                     </div>
                 </div>
@@ -130,13 +120,13 @@ const Login = () => {
                 <button 
                     type="button"
                     onClick={handleGuestLogin}
-                    className="w-full bg-slate-50 hover:bg-slate-100 dark:bg-[#0f0b22] dark:hover:bg-[#1b153b] text-slate-800 dark:text-purple-200 border border-slate-200 dark:border-purple-900/60 font-bold py-3 rounded-xl transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
+                    className="w-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-750 text-zinc-800 dark:text-zinc-200 font-bold py-2.5 rounded-xl transition text-xs flex items-center justify-center gap-1.5"
                 >
-                    <Sparkles size={16} className="text-brand" /> Explore as Guest (Demo Mode)
+                    <Sparkles size={14} className="text-amber-500" /> Explore as Guest (Demo Mode)
                 </button>
 
-                <p className="text-center mt-6 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                    New student? <Link to="/signup" className="text-brand font-bold hover:underline">Create an account</Link>
+                <p className="text-center mt-5 text-xs text-zinc-500">
+                    New student? <Link to="/signup" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">Create account</Link>
                 </p>
             </div>
         </div>
